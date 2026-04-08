@@ -4,6 +4,7 @@ import { Globe2, LockKeyhole, Play, Wand2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
+import { DeleteGameButton } from "@/components/game/delete-game-button";
 import { formatRelativeDate, truncate } from "@/lib/utils";
 
 type GameCardProps = {
@@ -17,12 +18,14 @@ type GameCardProps = {
   };
   creatorName?: string;
   mode?: "dashboard" | "public";
+  onDelete?: () => void;
 };
 
 export function GameCard({
   game,
   creatorName,
   mode = "dashboard",
+  onDelete,
 }: GameCardProps) {
   const isPublicView = mode === "public";
 
@@ -75,10 +78,12 @@ export function GameCard({
                 <Link href={`/play/${game.slug}`}>Open live</Link>
               </Button>
             ) : null}
+            {onDelete && (
+              <DeleteGameButton gameId={game.id} onSuccess={onDelete} />
+            )}
           </>
         )}
       </div>
     </Panel>
   );
 }
-

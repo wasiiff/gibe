@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { ArrowUpRight, Gamepad2, Sparkles } from "lucide-react";
 
 import { GamePreview } from "@/components/game-studio/game-preview";
+import { RemixButton } from "@/components/game/remix-button";
 import { ShareLinkButton } from "@/components/game/share-link-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,15 @@ export default async function PlayGamePage({
     js: game.jsCode,
   });
   const shareHref = `${process.env.BETTER_AUTH_URL ?? "http://localhost:3000"}/play/${game.slug}`;
+  const creatorName = game.user?.name ?? "Anonymous Creator";
+
+  // Extract howToPlay from the game - we'll store it in description for now
+  // In a real app, you'd have a separate howToPlay field
+  const howToPlay = [
+    "Use the preview above to play the live build directly.",
+    "Click 'Fullscreen' button for distraction-free gameplay.",
+    "Press ESC to exit fullscreen mode.",
+  ];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10 lg:px-8 lg:py-12">
@@ -52,39 +62,61 @@ export default async function PlayGamePage({
             </div>
             <ShareLinkButton href={shareHref} />
           </div>
-          <GamePreview srcDoc={previewDocument} title={`${game.title} public preview`} />
+          <GamePreview
+            srcDoc={previewDocument}
+            title={`${game.title} public preview`}
+            howToPlay={howToPlay}
+          />
         </Panel>
 
         <div className="space-y-6">
           <Panel className="p-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Creator</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+              Creator
+            </p>
             <h2 className="mt-3 font-display text-3xl uppercase tracking-[0.08em] text-white">
-              {game.user.name}
+              {creatorName}
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              Updated {formatRelativeDate(game.updatedAt)}. This page runs the published
-              HTML, CSS, and JavaScript inside an isolated sandboxed frame.
+              Updated {formatRelativeDate(game.updatedAt)}. This page runs the
+              published HTML, CSS, and JavaScript inside an isolated sandboxed
+              frame.
             </p>
           </Panel>
           <Panel className="p-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Play notes</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+              Play notes
+            </p>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
               <li>• Use the preview above to play the live build directly.</li>
-              <li>• Open the studio to create your own prompt-driven variation.</li>
-              <li>• Published updates replace this build without changing the link.</li>
+              <li>
+                • Open the studio to create your own prompt-driven variation.
+              </li>
+              <li>
+                • Published updates replace this build without changing the
+                link.
+              </li>
             </ul>
           </Panel>
           <div className="flex flex-wrap gap-3">
-            <Button asChild variant="primary" leading={<Sparkles className="size-4" />}>
+            <Button
+              asChild
+              variant="primary"
+              leading={<Sparkles className="size-4" />}
+            >
               <Link href="/studio/new">Forge your own game</Link>
             </Button>
-            <Button asChild variant="secondary" leading={<ArrowUpRight className="size-4" />}>
+            <Button
+              asChild
+              variant="secondary"
+              leading={<ArrowUpRight className="size-4" />}
+            >
               <Link href="/dashboard">Open dashboard</Link>
             </Button>
+            <RemixButton gameId={game.slug} />
           </div>
         </div>
       </section>
     </div>
   );
 }
-

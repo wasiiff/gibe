@@ -84,7 +84,10 @@ export async function getPublicGameBySlug(slug: string) {
 }
 
 export async function createGame(input: SaveGameInput) {
-  const slugBase = buildUniqueSlug(input.title, crypto.randomUUID().slice(0, 6));
+  const slugBase = buildUniqueSlug(
+    input.title,
+    crypto.randomUUID().slice(0, 6),
+  );
 
   return db.game.create({
     data: {
@@ -117,8 +120,124 @@ export async function updateGame(
       ...input,
       slug: nextSlug,
       publishedAt:
-        input.isPublic && !existing.publishedAt ? new Date() : existing.publishedAt,
+        input.isPublic && !existing.publishedAt
+          ? new Date()
+          : existing.publishedAt,
     },
   });
 }
 
+type SaveVersionInput = {
+  gameId: string;
+  title: string;
+  description: string;
+  htmlCode: string;
+  cssCode: string;
+  jsCode: string;
+};
+
+export async function createGameVersion(input: SaveVersionInput) {
+  return db.gameVersion.create({
+    data: {
+      gameId: input.gameId,
+      title: input.title,
+      description: input.description,
+      htmlCode: input.htmlCode,
+      cssCode: input.cssCode,
+      jsCode: input.jsCode,
+    },
+  });
+}
+
+export async function getGameVersions(gameId: string, userId: string) {
+  const game = await getOwnedGame(gameId, userId);
+
+  if (!game) {
+    return [];
+  }
+
+  return db.gameVersion.findMany({
+    where: { gameId },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+}
+
+export async function restoreGameVersion(
+  gameId: string,
+  versionId: string,
+  userId: string,
+) {
+  const game = await getOwnedGame(gameId, userId);
+
+  if (!game) {
+    return null;
+  }
+
+  const version = await db.gameVersion.findFirst({
+    where: { id: versionId, gameId },
+  });
+
+  if (!version) {
+    return null;
+  }
+
+  return db.game.update({
+    where: { id: gameId },
+    data: {
+      title: version.title,
+      description: version.description,
+      htmlCode: version.htmlCode,
+      cssCode: version.cssCode,
+      jsCode: version.jsCode,
+    },
+  });
+}
+
+export async function deleteGame(gameId: string, userId: string) {
+  const existing = await getOwnedGame(gameId, userId);
+
+  if (!existing) {
+    return null;
+  }
+
+  return db.game.delete({
+    where: { id: gameId },
+  });
+}
+
+type RemixGameInput = {
+  gameId: string;
+  userId: string;
+  prompt?: string;
+};
+
+export async function remixGame(input: RemixGameInput) {
+  const sourceGame =
+    (await getPublicGameBySlug(input.gameId)) ??
+    (await getOwnedGame(input.gameId, input.userId));
+
+  if (!sourceGame) {
+    return null;
+  }
+
+  const slugBase = buildUniqueSlug(
+    `Remix of ${sourceGame.title}`,
+    crypto.randomUUID().slice(0, 6),
+  );
+
+  return db.game.create({
+    data: {
+      userId: input.userId,
+      slug: slugBase,
+      title: `Remix of ${sourceGame.title}`,
+      description: sourceGame.description,
+      prompt: input.prompt ?? sourceGame.prompt,
+      refinedPrompt: sourceGame.refinedPrompt,
+      htmlCode: sourceGame.htmlCode,
+      cssCode: sourceGame.cssCode,
+      jsCode: sourceGame.jsCode,
+      isPublic: false,
+    },
+  });
+}

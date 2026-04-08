@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { updateGame } from "@/lib/games";
+import { deleteGame, updateGame } from "@/lib/games";
 import { getSessionFromRequest } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -46,8 +46,38 @@ export async function PATCH(
 
     return Response.json({ game });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to update the game.";
+    const message =
+      error instanceof Error ? error.message : "Unable to update the game.";
     return Response.json({ error: message }, { status: 400 });
   }
 }
 
+export async function DELETE(
+  request: Request,
+  context: RouteContext<"/api/games/[gameId]">,
+) {
+  const session = await getSessionFromRequest(request);
+
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { gameId } = await context.params;
+    const game = await deleteGame(gameId, session.user.id);
+
+    if (!game) {
+      return Response.json({ error: "Game not found" }, { status: 404 });
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath(`/studio/${gameId}`);
+
+    return Response.json({ success: true });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unable to delete the game.";
+    return Response.json({ error: message }, { status: 400 });
+  }
+}

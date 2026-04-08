@@ -2,7 +2,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Globe2, LockKeyhole, Plus, Sparkles } from "lucide-react";
 
-import { GameCard } from "@/components/game/game-card";
+import { GameCardList } from "@/components/game/game-card-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
@@ -29,25 +29,35 @@ export default async function DashboardPage() {
           <h1 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
             {session.user.name}
           </h1>
-          <p className="mt-3 text-sm leading-7 text-slate-300">{session.user.email}</p>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            {session.user.email}
+          </p>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <Panel className="p-4">
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Total builds</p>
-              <p className="mt-3 font-display text-3xl text-white">{games.length}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                Total builds
+              </p>
+              <p className="mt-3 font-display text-3xl text-white">
+                {games.length}
+              </p>
             </Panel>
             <Panel className="p-4">
               <p className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-slate-400">
                 <Globe2 className="size-3.5 text-cyan-200" />
                 Public
               </p>
-              <p className="mt-3 font-display text-3xl text-white">{publicCount}</p>
+              <p className="mt-3 font-display text-3xl text-white">
+                {publicCount}
+              </p>
             </Panel>
             <Panel className="p-4">
               <p className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-slate-400">
                 <LockKeyhole className="size-3.5 text-slate-200" />
                 Private
               </p>
-              <p className="mt-3 font-display text-3xl text-white">{privateCount}</p>
+              <p className="mt-3 font-display text-3xl text-white">
+                {privateCount}
+              </p>
             </Panel>
           </div>
         </Panel>
@@ -60,12 +70,17 @@ export default async function DashboardPage() {
             </h2>
             <p className="max-w-2xl text-sm leading-7 text-slate-300">
               Start from a blank prompt, regenerate code, inspect the sandboxed
-              preview, then push the result back here as a private draft or a public
-              arcade release.
+              preview, then push the result back here as a private draft or a
+              public arcade release.
             </p>
           </div>
           <div className="mt-6">
-            <Button asChild variant="primary" size="lg" leading={<Plus className="size-4" />}>
+            <Button
+              asChild
+              variant="primary"
+              size="lg"
+              leading={<Plus className="size-4" />}
+            >
               <Link href="/studio/new">Create new game</Link>
             </Button>
           </div>
@@ -79,19 +94,14 @@ export default async function DashboardPage() {
           description="Every draft stays tied to your profile. Reopen a studio session, edit the code manually, and publish updates when the preview is stable."
         />
         {games.length ? (
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {games.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
-          </div>
+          <GameCardList games={games} />
         ) : (
           <Panel className="p-8 text-sm leading-7 text-slate-300">
-            No saved builds yet. Open the studio, generate your first prompt-driven
-            game, then save it here.
+            No saved builds yet. Open the studio, generate your first
+            prompt-driven game, then save it here.
           </Panel>
         )}
       </section>
     </div>
   );
 }
-

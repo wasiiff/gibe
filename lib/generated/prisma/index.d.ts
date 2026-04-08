@@ -38,6 +38,11 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  * 
  */
 export type Game = $Result.DefaultSelection<Prisma.$GamePayload>
+/**
+ * Model GameVersion
+ * 
+ */
+export type GameVersion = $Result.DefaultSelection<Prisma.$GameVersionPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -209,6 +214,16 @@ export class PrismaClient<
     * ```
     */
   get game(): Prisma.GameDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.gameVersion`: Exposes CRUD operations for the **GameVersion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GameVersions
+    * const gameVersions = await prisma.gameVersion.findMany()
+    * ```
+    */
+  get gameVersion(): Prisma.GameVersionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -647,7 +662,8 @@ export namespace Prisma {
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification',
-    Game: 'Game'
+    Game: 'Game',
+    GameVersion: 'GameVersion'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -663,7 +679,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "game"
+      modelProps: "user" | "session" | "account" | "verification" | "game" | "gameVersion"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1037,6 +1053,80 @@ export namespace Prisma {
           }
         }
       }
+      GameVersion: {
+        payload: Prisma.$GameVersionPayload<ExtArgs>
+        fields: Prisma.GameVersionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GameVersionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GameVersionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          findFirst: {
+            args: Prisma.GameVersionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GameVersionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          findMany: {
+            args: Prisma.GameVersionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>[]
+          }
+          create: {
+            args: Prisma.GameVersionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          createMany: {
+            args: Prisma.GameVersionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GameVersionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>[]
+          }
+          delete: {
+            args: Prisma.GameVersionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          update: {
+            args: Prisma.GameVersionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          deleteMany: {
+            args: Prisma.GameVersionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GameVersionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GameVersionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>[]
+          }
+          upsert: {
+            args: Prisma.GameVersionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GameVersionPayload>
+          }
+          aggregate: {
+            args: Prisma.GameVersionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGameVersion>
+          }
+          groupBy: {
+            args: Prisma.GameVersionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GameVersionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GameVersionCountArgs<ExtArgs>
+            result: $Utils.Optional<GameVersionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1150,6 +1240,7 @@ export namespace Prisma {
     account?: AccountOmit
     verification?: VerificationOmit
     game?: GameOmit
+    gameVersion?: GameVersionOmit
   }
 
   /* Types for Logging */
@@ -1271,6 +1362,37 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameWhereInput
+  }
+
+
+  /**
+   * Count Type GameCountOutputType
+   */
+
+  export type GameCountOutputType = {
+    versions: number
+  }
+
+  export type GameCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    versions?: boolean | GameCountOutputTypeCountVersionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GameCountOutputType without action
+   */
+  export type GameCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameCountOutputType
+     */
+    select?: GameCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GameCountOutputType without action
+   */
+  export type GameCountOutputTypeCountVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GameVersionWhereInput
   }
 
 
@@ -5954,6 +6076,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    versions?: boolean | Game$versionsArgs<ExtArgs>
+    _count?: boolean | GameCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["game"]>
 
   export type GameSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6012,6 +6136,8 @@ export namespace Prisma {
   export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "description" | "prompt" | "refinedPrompt" | "htmlCode" | "cssCode" | "jsCode" | "isPublic" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["game"]>
   export type GameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    versions?: boolean | Game$versionsArgs<ExtArgs>
+    _count?: boolean | GameCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GameIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6024,6 +6150,7 @@ export namespace Prisma {
     name: "Game"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      versions: Prisma.$GameVersionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6435,6 +6562,7 @@ export namespace Prisma {
   export interface Prisma__GameClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    versions<T extends Game$versionsArgs<ExtArgs> = {}>(args?: Subset<T, Game$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6879,6 +7007,30 @@ export namespace Prisma {
   }
 
   /**
+   * Game.versions
+   */
+  export type Game$versionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    where?: GameVersionWhereInput
+    orderBy?: GameVersionOrderByWithRelationInput | GameVersionOrderByWithRelationInput[]
+    cursor?: GameVersionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GameVersionScalarFieldEnum | GameVersionScalarFieldEnum[]
+  }
+
+  /**
    * Game without action
    */
   export type GameDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6894,6 +7046,1108 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: GameInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GameVersion
+   */
+
+  export type AggregateGameVersion = {
+    _count: GameVersionCountAggregateOutputType | null
+    _min: GameVersionMinAggregateOutputType | null
+    _max: GameVersionMaxAggregateOutputType | null
+  }
+
+  export type GameVersionMinAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    title: string | null
+    description: string | null
+    htmlCode: string | null
+    cssCode: string | null
+    jsCode: string | null
+    createdAt: Date | null
+  }
+
+  export type GameVersionMaxAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    title: string | null
+    description: string | null
+    htmlCode: string | null
+    cssCode: string | null
+    jsCode: string | null
+    createdAt: Date | null
+  }
+
+  export type GameVersionCountAggregateOutputType = {
+    id: number
+    gameId: number
+    title: number
+    description: number
+    htmlCode: number
+    cssCode: number
+    jsCode: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type GameVersionMinAggregateInputType = {
+    id?: true
+    gameId?: true
+    title?: true
+    description?: true
+    htmlCode?: true
+    cssCode?: true
+    jsCode?: true
+    createdAt?: true
+  }
+
+  export type GameVersionMaxAggregateInputType = {
+    id?: true
+    gameId?: true
+    title?: true
+    description?: true
+    htmlCode?: true
+    cssCode?: true
+    jsCode?: true
+    createdAt?: true
+  }
+
+  export type GameVersionCountAggregateInputType = {
+    id?: true
+    gameId?: true
+    title?: true
+    description?: true
+    htmlCode?: true
+    cssCode?: true
+    jsCode?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type GameVersionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GameVersion to aggregate.
+     */
+    where?: GameVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameVersions to fetch.
+     */
+    orderBy?: GameVersionOrderByWithRelationInput | GameVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GameVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GameVersions
+    **/
+    _count?: true | GameVersionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GameVersionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GameVersionMaxAggregateInputType
+  }
+
+  export type GetGameVersionAggregateType<T extends GameVersionAggregateArgs> = {
+        [P in keyof T & keyof AggregateGameVersion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGameVersion[P]>
+      : GetScalarType<T[P], AggregateGameVersion[P]>
+  }
+
+
+
+
+  export type GameVersionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GameVersionWhereInput
+    orderBy?: GameVersionOrderByWithAggregationInput | GameVersionOrderByWithAggregationInput[]
+    by: GameVersionScalarFieldEnum[] | GameVersionScalarFieldEnum
+    having?: GameVersionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GameVersionCountAggregateInputType | true
+    _min?: GameVersionMinAggregateInputType
+    _max?: GameVersionMaxAggregateInputType
+  }
+
+  export type GameVersionGroupByOutputType = {
+    id: string
+    gameId: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt: Date
+    _count: GameVersionCountAggregateOutputType | null
+    _min: GameVersionMinAggregateOutputType | null
+    _max: GameVersionMaxAggregateOutputType | null
+  }
+
+  type GetGameVersionGroupByPayload<T extends GameVersionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GameVersionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GameVersionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GameVersionGroupByOutputType[P]>
+            : GetScalarType<T[P], GameVersionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GameVersionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    title?: boolean
+    description?: boolean
+    htmlCode?: boolean
+    cssCode?: boolean
+    jsCode?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gameVersion"]>
+
+  export type GameVersionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    title?: boolean
+    description?: boolean
+    htmlCode?: boolean
+    cssCode?: boolean
+    jsCode?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gameVersion"]>
+
+  export type GameVersionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    title?: boolean
+    description?: boolean
+    htmlCode?: boolean
+    cssCode?: boolean
+    jsCode?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gameVersion"]>
+
+  export type GameVersionSelectScalar = {
+    id?: boolean
+    gameId?: boolean
+    title?: boolean
+    description?: boolean
+    htmlCode?: boolean
+    cssCode?: boolean
+    jsCode?: boolean
+    createdAt?: boolean
+  }
+
+  export type GameVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "title" | "description" | "htmlCode" | "cssCode" | "jsCode" | "createdAt", ExtArgs["result"]["gameVersion"]>
+  export type GameVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+  export type GameVersionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+  export type GameVersionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+
+  export type $GameVersionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GameVersion"
+    objects: {
+      game: Prisma.$GamePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      gameId: string
+      title: string
+      description: string
+      htmlCode: string
+      cssCode: string
+      jsCode: string
+      createdAt: Date
+    }, ExtArgs["result"]["gameVersion"]>
+    composites: {}
+  }
+
+  type GameVersionGetPayload<S extends boolean | null | undefined | GameVersionDefaultArgs> = $Result.GetResult<Prisma.$GameVersionPayload, S>
+
+  type GameVersionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GameVersionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GameVersionCountAggregateInputType | true
+    }
+
+  export interface GameVersionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GameVersion'], meta: { name: 'GameVersion' } }
+    /**
+     * Find zero or one GameVersion that matches the filter.
+     * @param {GameVersionFindUniqueArgs} args - Arguments to find a GameVersion
+     * @example
+     * // Get one GameVersion
+     * const gameVersion = await prisma.gameVersion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GameVersionFindUniqueArgs>(args: SelectSubset<T, GameVersionFindUniqueArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GameVersion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GameVersionFindUniqueOrThrowArgs} args - Arguments to find a GameVersion
+     * @example
+     * // Get one GameVersion
+     * const gameVersion = await prisma.gameVersion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GameVersionFindUniqueOrThrowArgs>(args: SelectSubset<T, GameVersionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GameVersion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionFindFirstArgs} args - Arguments to find a GameVersion
+     * @example
+     * // Get one GameVersion
+     * const gameVersion = await prisma.gameVersion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GameVersionFindFirstArgs>(args?: SelectSubset<T, GameVersionFindFirstArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GameVersion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionFindFirstOrThrowArgs} args - Arguments to find a GameVersion
+     * @example
+     * // Get one GameVersion
+     * const gameVersion = await prisma.gameVersion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GameVersionFindFirstOrThrowArgs>(args?: SelectSubset<T, GameVersionFindFirstOrThrowArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GameVersions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GameVersions
+     * const gameVersions = await prisma.gameVersion.findMany()
+     * 
+     * // Get first 10 GameVersions
+     * const gameVersions = await prisma.gameVersion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const gameVersionWithIdOnly = await prisma.gameVersion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GameVersionFindManyArgs>(args?: SelectSubset<T, GameVersionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GameVersion.
+     * @param {GameVersionCreateArgs} args - Arguments to create a GameVersion.
+     * @example
+     * // Create one GameVersion
+     * const GameVersion = await prisma.gameVersion.create({
+     *   data: {
+     *     // ... data to create a GameVersion
+     *   }
+     * })
+     * 
+     */
+    create<T extends GameVersionCreateArgs>(args: SelectSubset<T, GameVersionCreateArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GameVersions.
+     * @param {GameVersionCreateManyArgs} args - Arguments to create many GameVersions.
+     * @example
+     * // Create many GameVersions
+     * const gameVersion = await prisma.gameVersion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GameVersionCreateManyArgs>(args?: SelectSubset<T, GameVersionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GameVersions and returns the data saved in the database.
+     * @param {GameVersionCreateManyAndReturnArgs} args - Arguments to create many GameVersions.
+     * @example
+     * // Create many GameVersions
+     * const gameVersion = await prisma.gameVersion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GameVersions and only return the `id`
+     * const gameVersionWithIdOnly = await prisma.gameVersion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GameVersionCreateManyAndReturnArgs>(args?: SelectSubset<T, GameVersionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GameVersion.
+     * @param {GameVersionDeleteArgs} args - Arguments to delete one GameVersion.
+     * @example
+     * // Delete one GameVersion
+     * const GameVersion = await prisma.gameVersion.delete({
+     *   where: {
+     *     // ... filter to delete one GameVersion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GameVersionDeleteArgs>(args: SelectSubset<T, GameVersionDeleteArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GameVersion.
+     * @param {GameVersionUpdateArgs} args - Arguments to update one GameVersion.
+     * @example
+     * // Update one GameVersion
+     * const gameVersion = await prisma.gameVersion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GameVersionUpdateArgs>(args: SelectSubset<T, GameVersionUpdateArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GameVersions.
+     * @param {GameVersionDeleteManyArgs} args - Arguments to filter GameVersions to delete.
+     * @example
+     * // Delete a few GameVersions
+     * const { count } = await prisma.gameVersion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GameVersionDeleteManyArgs>(args?: SelectSubset<T, GameVersionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GameVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GameVersions
+     * const gameVersion = await prisma.gameVersion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GameVersionUpdateManyArgs>(args: SelectSubset<T, GameVersionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GameVersions and returns the data updated in the database.
+     * @param {GameVersionUpdateManyAndReturnArgs} args - Arguments to update many GameVersions.
+     * @example
+     * // Update many GameVersions
+     * const gameVersion = await prisma.gameVersion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GameVersions and only return the `id`
+     * const gameVersionWithIdOnly = await prisma.gameVersion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GameVersionUpdateManyAndReturnArgs>(args: SelectSubset<T, GameVersionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GameVersion.
+     * @param {GameVersionUpsertArgs} args - Arguments to update or create a GameVersion.
+     * @example
+     * // Update or create a GameVersion
+     * const gameVersion = await prisma.gameVersion.upsert({
+     *   create: {
+     *     // ... data to create a GameVersion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GameVersion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GameVersionUpsertArgs>(args: SelectSubset<T, GameVersionUpsertArgs<ExtArgs>>): Prisma__GameVersionClient<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GameVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionCountArgs} args - Arguments to filter GameVersions to count.
+     * @example
+     * // Count the number of GameVersions
+     * const count = await prisma.gameVersion.count({
+     *   where: {
+     *     // ... the filter for the GameVersions we want to count
+     *   }
+     * })
+    **/
+    count<T extends GameVersionCountArgs>(
+      args?: Subset<T, GameVersionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GameVersionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GameVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GameVersionAggregateArgs>(args: Subset<T, GameVersionAggregateArgs>): Prisma.PrismaPromise<GetGameVersionAggregateType<T>>
+
+    /**
+     * Group by GameVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GameVersionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GameVersionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GameVersionGroupByArgs['orderBy'] }
+        : { orderBy?: GameVersionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GameVersionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGameVersionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GameVersion model
+   */
+  readonly fields: GameVersionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GameVersion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GameVersionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    game<T extends GameDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GameDefaultArgs<ExtArgs>>): Prisma__GameClient<$Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GameVersion model
+   */
+  interface GameVersionFieldRefs {
+    readonly id: FieldRef<"GameVersion", 'String'>
+    readonly gameId: FieldRef<"GameVersion", 'String'>
+    readonly title: FieldRef<"GameVersion", 'String'>
+    readonly description: FieldRef<"GameVersion", 'String'>
+    readonly htmlCode: FieldRef<"GameVersion", 'String'>
+    readonly cssCode: FieldRef<"GameVersion", 'String'>
+    readonly jsCode: FieldRef<"GameVersion", 'String'>
+    readonly createdAt: FieldRef<"GameVersion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GameVersion findUnique
+   */
+  export type GameVersionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which GameVersion to fetch.
+     */
+    where: GameVersionWhereUniqueInput
+  }
+
+  /**
+   * GameVersion findUniqueOrThrow
+   */
+  export type GameVersionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which GameVersion to fetch.
+     */
+    where: GameVersionWhereUniqueInput
+  }
+
+  /**
+   * GameVersion findFirst
+   */
+  export type GameVersionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which GameVersion to fetch.
+     */
+    where?: GameVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameVersions to fetch.
+     */
+    orderBy?: GameVersionOrderByWithRelationInput | GameVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GameVersions.
+     */
+    cursor?: GameVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameVersions.
+     */
+    distinct?: GameVersionScalarFieldEnum | GameVersionScalarFieldEnum[]
+  }
+
+  /**
+   * GameVersion findFirstOrThrow
+   */
+  export type GameVersionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which GameVersion to fetch.
+     */
+    where?: GameVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameVersions to fetch.
+     */
+    orderBy?: GameVersionOrderByWithRelationInput | GameVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GameVersions.
+     */
+    cursor?: GameVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameVersions.
+     */
+    distinct?: GameVersionScalarFieldEnum | GameVersionScalarFieldEnum[]
+  }
+
+  /**
+   * GameVersion findMany
+   */
+  export type GameVersionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which GameVersions to fetch.
+     */
+    where?: GameVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GameVersions to fetch.
+     */
+    orderBy?: GameVersionOrderByWithRelationInput | GameVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GameVersions.
+     */
+    cursor?: GameVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GameVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GameVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameVersions.
+     */
+    distinct?: GameVersionScalarFieldEnum | GameVersionScalarFieldEnum[]
+  }
+
+  /**
+   * GameVersion create
+   */
+  export type GameVersionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GameVersion.
+     */
+    data: XOR<GameVersionCreateInput, GameVersionUncheckedCreateInput>
+  }
+
+  /**
+   * GameVersion createMany
+   */
+  export type GameVersionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GameVersions.
+     */
+    data: GameVersionCreateManyInput | GameVersionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GameVersion createManyAndReturn
+   */
+  export type GameVersionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * The data used to create many GameVersions.
+     */
+    data: GameVersionCreateManyInput | GameVersionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GameVersion update
+   */
+  export type GameVersionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GameVersion.
+     */
+    data: XOR<GameVersionUpdateInput, GameVersionUncheckedUpdateInput>
+    /**
+     * Choose, which GameVersion to update.
+     */
+    where: GameVersionWhereUniqueInput
+  }
+
+  /**
+   * GameVersion updateMany
+   */
+  export type GameVersionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GameVersions.
+     */
+    data: XOR<GameVersionUpdateManyMutationInput, GameVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which GameVersions to update
+     */
+    where?: GameVersionWhereInput
+    /**
+     * Limit how many GameVersions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GameVersion updateManyAndReturn
+   */
+  export type GameVersionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * The data used to update GameVersions.
+     */
+    data: XOR<GameVersionUpdateManyMutationInput, GameVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which GameVersions to update
+     */
+    where?: GameVersionWhereInput
+    /**
+     * Limit how many GameVersions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GameVersion upsert
+   */
+  export type GameVersionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GameVersion to update in case it exists.
+     */
+    where: GameVersionWhereUniqueInput
+    /**
+     * In case the GameVersion found by the `where` argument doesn't exist, create a new GameVersion with this data.
+     */
+    create: XOR<GameVersionCreateInput, GameVersionUncheckedCreateInput>
+    /**
+     * In case the GameVersion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GameVersionUpdateInput, GameVersionUncheckedUpdateInput>
+  }
+
+  /**
+   * GameVersion delete
+   */
+  export type GameVersionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
+    /**
+     * Filter which GameVersion to delete.
+     */
+    where: GameVersionWhereUniqueInput
+  }
+
+  /**
+   * GameVersion deleteMany
+   */
+  export type GameVersionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GameVersions to delete
+     */
+    where?: GameVersionWhereInput
+    /**
+     * Limit how many GameVersions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GameVersion without action
+   */
+  export type GameVersionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameVersion
+     */
+    select?: GameVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameVersion
+     */
+    omit?: GameVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameVersionInclude<ExtArgs> | null
   }
 
 
@@ -6987,6 +8241,20 @@ export namespace Prisma {
   };
 
   export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum]
+
+
+  export const GameVersionScalarFieldEnum: {
+    id: 'id',
+    gameId: 'gameId',
+    title: 'title',
+    description: 'description',
+    htmlCode: 'htmlCode',
+    cssCode: 'cssCode',
+    jsCode: 'jsCode',
+    createdAt: 'createdAt'
+  };
+
+  export type GameVersionScalarFieldEnum = (typeof GameVersionScalarFieldEnum)[keyof typeof GameVersionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -7383,6 +8651,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    versions?: GameVersionListRelationFilter
   }
 
   export type GameOrderByWithRelationInput = {
@@ -7401,6 +8670,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    versions?: GameVersionOrderByRelationAggregateInput
   }
 
   export type GameWhereUniqueInput = Prisma.AtLeast<{
@@ -7422,6 +8692,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    versions?: GameVersionListRelationFilter
   }, "id" | "slug">
 
   export type GameOrderByWithAggregationInput = {
@@ -7462,6 +8733,76 @@ export namespace Prisma {
     publishedAt?: DateTimeNullableWithAggregatesFilter<"Game"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
+  }
+
+  export type GameVersionWhereInput = {
+    AND?: GameVersionWhereInput | GameVersionWhereInput[]
+    OR?: GameVersionWhereInput[]
+    NOT?: GameVersionWhereInput | GameVersionWhereInput[]
+    id?: StringFilter<"GameVersion"> | string
+    gameId?: StringFilter<"GameVersion"> | string
+    title?: StringFilter<"GameVersion"> | string
+    description?: StringFilter<"GameVersion"> | string
+    htmlCode?: StringFilter<"GameVersion"> | string
+    cssCode?: StringFilter<"GameVersion"> | string
+    jsCode?: StringFilter<"GameVersion"> | string
+    createdAt?: DateTimeFilter<"GameVersion"> | Date | string
+    game?: XOR<GameScalarRelationFilter, GameWhereInput>
+  }
+
+  export type GameVersionOrderByWithRelationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    htmlCode?: SortOrder
+    cssCode?: SortOrder
+    jsCode?: SortOrder
+    createdAt?: SortOrder
+    game?: GameOrderByWithRelationInput
+  }
+
+  export type GameVersionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GameVersionWhereInput | GameVersionWhereInput[]
+    OR?: GameVersionWhereInput[]
+    NOT?: GameVersionWhereInput | GameVersionWhereInput[]
+    gameId?: StringFilter<"GameVersion"> | string
+    title?: StringFilter<"GameVersion"> | string
+    description?: StringFilter<"GameVersion"> | string
+    htmlCode?: StringFilter<"GameVersion"> | string
+    cssCode?: StringFilter<"GameVersion"> | string
+    jsCode?: StringFilter<"GameVersion"> | string
+    createdAt?: DateTimeFilter<"GameVersion"> | Date | string
+    game?: XOR<GameScalarRelationFilter, GameWhereInput>
+  }, "id">
+
+  export type GameVersionOrderByWithAggregationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    htmlCode?: SortOrder
+    cssCode?: SortOrder
+    jsCode?: SortOrder
+    createdAt?: SortOrder
+    _count?: GameVersionCountOrderByAggregateInput
+    _max?: GameVersionMaxOrderByAggregateInput
+    _min?: GameVersionMinOrderByAggregateInput
+  }
+
+  export type GameVersionScalarWhereWithAggregatesInput = {
+    AND?: GameVersionScalarWhereWithAggregatesInput | GameVersionScalarWhereWithAggregatesInput[]
+    OR?: GameVersionScalarWhereWithAggregatesInput[]
+    NOT?: GameVersionScalarWhereWithAggregatesInput | GameVersionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GameVersion"> | string
+    gameId?: StringWithAggregatesFilter<"GameVersion"> | string
+    title?: StringWithAggregatesFilter<"GameVersion"> | string
+    description?: StringWithAggregatesFilter<"GameVersion"> | string
+    htmlCode?: StringWithAggregatesFilter<"GameVersion"> | string
+    cssCode?: StringWithAggregatesFilter<"GameVersion"> | string
+    jsCode?: StringWithAggregatesFilter<"GameVersion"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"GameVersion"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -7811,6 +9152,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGamesInput
+    versions?: GameVersionCreateNestedManyWithoutGameInput
   }
 
   export type GameUncheckedCreateInput = {
@@ -7828,6 +9170,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
   }
 
   export type GameUpdateInput = {
@@ -7845,6 +9188,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGamesNestedInput
+    versions?: GameVersionUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateInput = {
@@ -7862,6 +9206,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
   }
 
   export type GameCreateManyInput = {
@@ -7912,6 +9257,82 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionCreateInput = {
+    id?: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+    game: GameCreateNestedOneWithoutVersionsInput
+  }
+
+  export type GameVersionUncheckedCreateInput = {
+    id?: string
+    gameId: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type GameVersionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    game?: GameUpdateOneRequiredWithoutVersionsNestedInput
+  }
+
+  export type GameVersionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionCreateManyInput = {
+    id?: string
+    gameId: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type GameVersionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8226,6 +9647,16 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type GameVersionListRelationFilter = {
+    every?: GameVersionWhereInput
+    some?: GameVersionWhereInput
+    none?: GameVersionWhereInput
+  }
+
+  export type GameVersionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type GameCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -8275,6 +9706,44 @@ export namespace Prisma {
     publishedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type GameScalarRelationFilter = {
+    is?: GameWhereInput
+    isNot?: GameWhereInput
+  }
+
+  export type GameVersionCountOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    htmlCode?: SortOrder
+    cssCode?: SortOrder
+    jsCode?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GameVersionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    htmlCode?: SortOrder
+    cssCode?: SortOrder
+    jsCode?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GameVersionMinOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    htmlCode?: SortOrder
+    cssCode?: SortOrder
+    jsCode?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -8457,12 +9926,68 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type GameVersionCreateNestedManyWithoutGameInput = {
+    create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
+    createMany?: GameVersionCreateManyGameInputEnvelope
+    connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+  }
+
+  export type GameVersionUncheckedCreateNestedManyWithoutGameInput = {
+    create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
+    createMany?: GameVersionCreateManyGameInputEnvelope
+    connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+  }
+
   export type UserUpdateOneRequiredWithoutGamesNestedInput = {
     create?: XOR<UserCreateWithoutGamesInput, UserUncheckedCreateWithoutGamesInput>
     connectOrCreate?: UserCreateOrConnectWithoutGamesInput
     upsert?: UserUpsertWithoutGamesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGamesInput, UserUpdateWithoutGamesInput>, UserUncheckedUpdateWithoutGamesInput>
+  }
+
+  export type GameVersionUpdateManyWithoutGameNestedInput = {
+    create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
+    upsert?: GameVersionUpsertWithWhereUniqueWithoutGameInput | GameVersionUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: GameVersionCreateManyGameInputEnvelope
+    set?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    disconnect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    delete?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    update?: GameVersionUpdateWithWhereUniqueWithoutGameInput | GameVersionUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: GameVersionUpdateManyWithWhereWithoutGameInput | GameVersionUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
+  }
+
+  export type GameVersionUncheckedUpdateManyWithoutGameNestedInput = {
+    create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
+    upsert?: GameVersionUpsertWithWhereUniqueWithoutGameInput | GameVersionUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: GameVersionCreateManyGameInputEnvelope
+    set?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    disconnect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    delete?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+    update?: GameVersionUpdateWithWhereUniqueWithoutGameInput | GameVersionUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: GameVersionUpdateManyWithWhereWithoutGameInput | GameVersionUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
+  }
+
+  export type GameCreateNestedOneWithoutVersionsInput = {
+    create?: XOR<GameCreateWithoutVersionsInput, GameUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: GameCreateOrConnectWithoutVersionsInput
+    connect?: GameWhereUniqueInput
+  }
+
+  export type GameUpdateOneRequiredWithoutVersionsNestedInput = {
+    create?: XOR<GameCreateWithoutVersionsInput, GameUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: GameCreateOrConnectWithoutVersionsInput
+    upsert?: GameUpsertWithoutVersionsInput
+    connect?: GameWhereUniqueInput
+    update?: XOR<XOR<GameUpdateToOneWithWhereWithoutVersionsInput, GameUpdateWithoutVersionsInput>, GameUncheckedUpdateWithoutVersionsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8696,6 +10221,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    versions?: GameVersionCreateNestedManyWithoutGameInput
   }
 
   export type GameUncheckedCreateWithoutUserInput = {
@@ -8712,6 +10238,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
   }
 
   export type GameCreateOrConnectWithoutUserInput = {
@@ -8982,6 +10509,36 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutGamesInput, UserUncheckedCreateWithoutGamesInput>
   }
 
+  export type GameVersionCreateWithoutGameInput = {
+    id?: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type GameVersionUncheckedCreateWithoutGameInput = {
+    id?: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type GameVersionCreateOrConnectWithoutGameInput = {
+    where: GameVersionWhereUniqueInput
+    create: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput>
+  }
+
+  export type GameVersionCreateManyGameInputEnvelope = {
+    data: GameVersionCreateManyGameInput | GameVersionCreateManyGameInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutGamesInput = {
     update: XOR<UserUpdateWithoutGamesInput, UserUncheckedUpdateWithoutGamesInput>
     create: XOR<UserCreateWithoutGamesInput, UserUncheckedCreateWithoutGamesInput>
@@ -9015,6 +10572,120 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type GameVersionUpsertWithWhereUniqueWithoutGameInput = {
+    where: GameVersionWhereUniqueInput
+    update: XOR<GameVersionUpdateWithoutGameInput, GameVersionUncheckedUpdateWithoutGameInput>
+    create: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput>
+  }
+
+  export type GameVersionUpdateWithWhereUniqueWithoutGameInput = {
+    where: GameVersionWhereUniqueInput
+    data: XOR<GameVersionUpdateWithoutGameInput, GameVersionUncheckedUpdateWithoutGameInput>
+  }
+
+  export type GameVersionUpdateManyWithWhereWithoutGameInput = {
+    where: GameVersionScalarWhereInput
+    data: XOR<GameVersionUpdateManyMutationInput, GameVersionUncheckedUpdateManyWithoutGameInput>
+  }
+
+  export type GameVersionScalarWhereInput = {
+    AND?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
+    OR?: GameVersionScalarWhereInput[]
+    NOT?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
+    id?: StringFilter<"GameVersion"> | string
+    gameId?: StringFilter<"GameVersion"> | string
+    title?: StringFilter<"GameVersion"> | string
+    description?: StringFilter<"GameVersion"> | string
+    htmlCode?: StringFilter<"GameVersion"> | string
+    cssCode?: StringFilter<"GameVersion"> | string
+    jsCode?: StringFilter<"GameVersion"> | string
+    createdAt?: DateTimeFilter<"GameVersion"> | Date | string
+  }
+
+  export type GameCreateWithoutVersionsInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    prompt: string
+    refinedPrompt?: string | null
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    isPublic?: boolean
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutGamesInput
+  }
+
+  export type GameUncheckedCreateWithoutVersionsInput = {
+    id?: string
+    userId: string
+    slug: string
+    title: string
+    description: string
+    prompt: string
+    refinedPrompt?: string | null
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    isPublic?: boolean
+    publishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GameCreateOrConnectWithoutVersionsInput = {
+    where: GameWhereUniqueInput
+    create: XOR<GameCreateWithoutVersionsInput, GameUncheckedCreateWithoutVersionsInput>
+  }
+
+  export type GameUpsertWithoutVersionsInput = {
+    update: XOR<GameUpdateWithoutVersionsInput, GameUncheckedUpdateWithoutVersionsInput>
+    create: XOR<GameCreateWithoutVersionsInput, GameUncheckedCreateWithoutVersionsInput>
+    where?: GameWhereInput
+  }
+
+  export type GameUpdateToOneWithWhereWithoutVersionsInput = {
+    where?: GameWhereInput
+    data: XOR<GameUpdateWithoutVersionsInput, GameUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type GameUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    refinedPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGamesNestedInput
+  }
+
+  export type GameUncheckedUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    refinedPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateManyUserInput = {
@@ -9147,6 +10818,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: GameVersionUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateWithoutUserInput = {
@@ -9163,6 +10835,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateManyWithoutUserInput = {
@@ -9179,6 +10852,46 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionCreateManyGameInput = {
+    id?: string
+    title: string
+    description: string
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type GameVersionUpdateWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionUncheckedUpdateWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GameVersionUncheckedUpdateManyWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

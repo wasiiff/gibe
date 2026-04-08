@@ -1,31 +1,39 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
-  ArrowUpRight,
   CheckCircle2,
   Code2,
+  Eye,
+  FileCode,
   Globe2,
   LoaderCircle,
+  MessageSquare,
   Play,
   Save,
   Shield,
   Sparkles,
   Wand2,
+  Zap,
 } from "lucide-react";
 import { useDeferredValue, useState, useTransition } from "react";
 
 import { CodeEditor } from "@/components/game-studio/code-editor";
 import { GamePreview } from "@/components/game-studio/game-preview";
+import { PromptTemplates } from "@/components/game-studio/prompt-templates";
 import { ShareLinkButton } from "@/components/game/share-link-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
+import { StepIndicator } from "@/components/game-studio/step-indicator";
 import { buildPreviewDocument } from "@/lib/preview-document";
-import { starterBundle, starterGame, starterRefinement } from "@/lib/starter-game";
-import type { PromptRefinement, RuntimeMessage } from "@/lib/types";
+import {
+  starterBundle,
+  starterGame,
+  starterRefinement,
+} from "@/lib/starter-game";
+import type { CodeBundle, PromptRefinement, RuntimeMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type StudioGame = {
@@ -50,7 +58,13 @@ const tabStyles = {
 const defaultPrompt =
   "Build a neon survival arena where the player dodges hazards, grabs energy shards, and chases a high score combo.";
 
-export function StudioShell({ initialGame }: { initialGame: StudioGame | null }) {
+type ViewMode = "prompt" | "preview" | "code";
+
+export function StudioShell({
+  initialGame,
+}: {
+  initialGame: StudioGame | null;
+}) {
   const router = useRouter();
   const [gameId, setGameId] = useState(initialGame?.id ?? null);
   const [slug, setSlug] = useState(initialGame?.slug ?? null);
@@ -70,29 +84,73 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
       : starterRefinement,
   );
   const [howToPlay, setHowToPlay] = useState(starterGame.howToPlay);
-  const [bundle, setBundle] = useState({
+  const [bundle, setBundle] = useState<CodeBundle>({
     html: initialGame?.htmlCode ?? starterBundle.html,
     css: initialGame?.cssCode ?? starterBundle.css,
     js: initialGame?.jsCode ?? starterBundle.js,
   });
-  const [activeTab, setActiveTab] = useState<"html" | "css" | "javascript">("html");
-  const [runtimeMessages, setRuntimeMessages] = useState<RuntimeMessage[]>([]);
-  const [previewState, setPreviewState] = useState<"syncing" | "ready" | "error">(
-    "syncing",
+  const [activeTab, setActiveTab] = useState<"html" | "css" | "javascript">(
+    "html",
   );
+  const [runtimeMessages, setRuntimeMessages] = useState<RuntimeMessage[]>([]);
+  const [previewState, setPreviewState] = useState<
+    "syncing" | "ready" | "error"
+  >("syncing");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [statusLine, setStatusLine] = useState<string>(
     initialGame
-      ? "Loaded saved build. Edit code, refresh the preview, and publish when ready."
-      : "Starter arena loaded. Replace the prompt to forge your first AI-generated game.",
+      ? "Edit code or regenerate. Publish when ready."
+      : "Describe your game idea to get started.",
   );
   const [isGenerating, startGenerateTransition] = useTransition();
   const [isRepairing, startRepairTransition] = useTransition();
   const [isSaving, startSaveTransition] = useTransition();
+  const [hasGenerated, setHasGenerated] = useState(initialGame !== null);
+  const [hasPublished, setHasPublished] = useState(
+    initialGame?.isPublic ?? false,
+  );
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [mobileView, setMobileView] = useState<ViewMode>("prompt");
+
   const deferredBundle = useDeferredValue(bundle);
   const previewDocument = buildPreviewDocument(deferredBundle);
   const shareUrl =
-    slug && typeof window !== "undefined" ? `${window.location.origin}/play/${slug}` : null;
+    slug && typeof window !== "undefined"
+      ? `${window.location.origin}/play/${slug}`
+      : null;
+
+  const steps = [
+    {
+      number: 1,
+      label: "Describe",
+      completed: prompt.length > 10,
+      active: !hasGenerated,
+    },
+    {
+      number: 2,
+      label: "Generate",
+      completed: hasGenerated,
+      active: !hasGenerated && isGenerating,
+    },
+    {
+      number: 3,
+      label: "Play",
+      completed: previewState === "ready",
+      active: hasGenerated && previewState === "ready",
+    },
+    {
+      number: 4,
+      label: "Refine",
+      completed: runtimeMessages.length === 0 && hasGenerated,
+      active: previewState === "error",
+    },
+    {
+      number: 5,
+      label: "Publish",
+      completed: hasPublished,
+      active: hasGenerated && previewState === "ready",
+    },
+  ];
 
   async function requestJson<T>(input: RequestInfo, init?: RequestInit) {
     const response = await fetch(input, init);
@@ -105,7 +163,7 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
     return data;
   }
 
-  function applyBundle(nextBundle: typeof bundle) {
+  function applyBundle(nextBundle: CodeBundle) {
     setPreviewState("syncing");
     setRuntimeMessages([]);
     setBundle({
@@ -115,7 +173,7 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
     });
   }
 
-  function updateBundlePart(part: keyof typeof bundle, value: string) {
+  function updateBundlePart(part: keyof CodeBundle, value: string) {
     setPreviewState("syncing");
     setRuntimeMessages([]);
     setBundle((current) => ({ ...current, [part]: value }));
@@ -130,7 +188,8 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
 
   async function handleGenerate() {
     setRequestError(null);
-    setStatusLine("Refining prompt and generating a fresh game build.");
+    setShowTemplates(false);
+    setStatusLine("Generating game...");
     startGenerateTransition(async () => {
       try {
         const payload = await requestJson<{
@@ -160,25 +219,32 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
           css: payload.game.css,
           js: payload.game.js,
         });
-        setStatusLine("Fresh build forged. Run it, inspect the preview, and save when it feels right.");
+        setHasGenerated(true);
+        setPreviewState("ready");
+        setStatusLine("Game ready! Play it or publish when satisfied.");
+        setMobileView("preview");
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Unable to generate the game.";
+          error instanceof Error
+            ? error.message
+            : "Unable to generate the game.";
         setRequestError(message);
-        setStatusLine("Generation failed before the new build could land.");
+        setStatusLine("Generation failed. Try again.");
       }
     });
   }
 
   async function handleRepair() {
-    const latestRuntimeMessage = runtimeMessages.find((entry) => entry.type !== "ready");
+    const latestRuntimeMessage = runtimeMessages.find(
+      (entry) => entry.type !== "ready",
+    );
 
     if (!latestRuntimeMessage || !refinement) {
       return;
     }
 
     setRequestError(null);
-    setStatusLine("Sending the runtime fault back through the repair loop.");
+    setStatusLine("Fixing error...");
     startRepairTransition(async () => {
       try {
         const payload = await requestJson<{
@@ -195,7 +261,8 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
             prompt,
             refinement,
             bundle,
-            runtimeError: latestRuntimeMessage.message ?? "Unknown runtime error",
+            runtimeError:
+              latestRuntimeMessage.message ?? "Unknown runtime error",
           }),
         });
 
@@ -209,14 +276,14 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
         const message =
           error instanceof Error ? error.message : "Unable to repair the game.";
         setRequestError(message);
-        setStatusLine("Repair loop failed. Review the runtime trace and try again.");
+        setStatusLine("Repair failed. Try again.");
       }
     });
   }
 
   async function saveGame(isPublic: boolean) {
     setRequestError(null);
-    setStatusLine(isPublic ? "Publishing build to the arcade." : "Saving private studio draft.");
+    setStatusLine(isPublic ? "Publishing..." : "Saving...");
     startSaveTransition(async () => {
       try {
         const body = {
@@ -248,254 +315,286 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
 
         setGameId(payload.game.id);
         setSlug(payload.game.slug);
+        setHasPublished(payload.game.isPublic);
         setStatusLine(
           payload.game.isPublic
-            ? "Live link published. Open the public page or copy the share URL."
-            : "Private build saved to your dashboard.",
+            ? "Published! Share the link."
+            : "Saved to dashboard.",
         );
         router.replace(`/studio/${payload.game.id}`);
         router.refresh();
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unable to save the game.";
+        const message =
+          error instanceof Error ? error.message : "Unable to save the game.";
         setRequestError(message);
-        setStatusLine("Save failed before the build could be persisted.");
+        setStatusLine("Save failed. Try again.");
       }
     });
   }
 
+  function handleTemplateSelect(templatePrompt: string) {
+    setPrompt(templatePrompt);
+    setShowTemplates(false);
+    setStatusLine("Template loaded. Click Generate to create your game.");
+  }
+
   return (
-    <div className="space-y-8">
-      <div className="grid gap-8 xl:grid-cols-[1.05fr_1.35fr]">
-        <div className="space-y-6">
-          <Panel className="p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-3">
-                <Badge className="text-cyan-200">
-                  <Sparkles className="size-3.5" />
-                  Prompt forge
-                </Badge>
-                <div className="space-y-2">
-                  <h1 className="font-display text-3xl uppercase tracking-[0.08em] text-white">
-                    Build a Browser Game
-                  </h1>
-                  <p className="text-sm leading-7 text-slate-300">
-                    Refine the idea, generate a playable draft, patch runtime faults,
-                    then ship a public arcade link from the same workspace.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-3">
+    <div className="space-y-4">
+      {/* Step Indicator */}
+      <Panel className="p-3">
+        <StepIndicator steps={steps} />
+      </Panel>
+
+      {/* Mobile View Switcher */}
+      <div className="flex gap-2 lg:hidden">
+        {(["prompt", "preview", "code"] as const).map((view) => (
+          <Button
+            key={view}
+            variant={mobileView === view ? "primary" : "secondary"}
+            size="sm"
+            leading={
+              view === "prompt" ? (
+                <MessageSquare className="size-4" />
+              ) : view === "preview" ? (
+                <Eye className="size-4" />
+              ) : (
+                <FileCode className="size-4" />
+              )
+            }
+            onClick={() => setMobileView(view)}
+            className="flex-1"
+          >
+            {view.charAt(0).toUpperCase() + view.slice(1)}
+          </Button>
+        ))}
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[1fr_1.6fr]">
+        {/* Left Column - Prompt & Controls */}
+        <div
+          className={cn(
+            "space-y-4",
+            mobileView !== "prompt" && "hidden lg:block",
+          )}
+        >
+          <Panel className="p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <Badge className="text-cyan-200">
+                <Sparkles className="size-3.5" />
+                Step 1
+              </Badge>
+              <div className="flex gap-2">
                 <Button
-                  variant="secondary"
-                  leading={<Save className="size-4" />}
-                  disabled={isSaving}
-                  onClick={() => saveGame(false)}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTemplates(!showTemplates)}
                 >
-                  {isSaving ? "Saving" : "Save private"}
-                </Button>
-                <Button
-                  variant="primary"
-                  leading={isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <Globe2 className="size-4" />}
-                  disabled={isSaving}
-                  onClick={() => saveGame(true)}
-                >
-                  {gameId ? "Publish update" : "Publish"}
+                  {showTemplates ? "Hide" : "Templates"}
                 </Button>
               </div>
             </div>
 
-            <div className="mt-6 space-y-4">
-              <label className="space-y-2 text-sm text-slate-300">
+            <label className="block space-y-2">
+              <span className="block text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                Game Idea
+              </span>
+              <textarea
+                value={prompt}
+                onChange={(event) => setPrompt(event.target.value)}
+                className="min-h-[100px] w-full rounded-[12px] border border-white/10 bg-white/5 px-3 py-2.5 text-sm leading-6 text-white placeholder-slate-500 outline-none transition focus:border-cyan-400/50"
+                placeholder="A platformer where you jump between clouds..."
+              />
+            </label>
+
+            {/* Templates (collapsible) */}
+            {showTemplates && (
+              <div className="mt-4">
+                <PromptTemplates onSelect={handleTemplateSelect} />
+              </div>
+            )}
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              <label className="block space-y-1.5">
                 <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
-                  Prompt
+                  Title
                 </span>
-                <textarea
-                  value={prompt}
-                  onChange={(event) => setPrompt(event.target.value)}
-                  className="min-h-36 w-full rounded-[24px] border border-white/10 bg-white/6 px-4 py-4 text-sm leading-7 text-white outline-none ring-0 transition focus:border-cyan-300/30"
-                  placeholder="Describe the game you want to generate."
+                <input
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  className="h-9 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white outline-none transition focus:border-cyan-400/50"
+                  placeholder="Game name"
                 />
               </label>
+              <label className="block space-y-1.5">
+                <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                  Description
+                </span>
+                <input
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  className="h-9 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white outline-none transition focus:border-cyan-400/50"
+                  placeholder="Short description"
+                />
+              </label>
+            </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="space-y-2 text-sm text-slate-300">
-                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
-                    Title
-                  </span>
-                  <input
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    className="h-12 w-full rounded-full border border-white/10 bg-white/6 px-4 text-white outline-none transition focus:border-cyan-300/30"
-                  />
-                </label>
-                <label className="space-y-2 text-sm text-slate-300">
-                  <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
-                    Description
-                  </span>
-                  <input
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
-                    className="h-12 w-full rounded-full border border-white/10 bg-white/6 px-4 text-white outline-none transition focus:border-cyan-300/30"
-                  />
-                </label>
+            <div className="mt-4 flex gap-2">
+              <Button
+                variant="primary"
+                size="sm"
+                leading={
+                  isGenerating ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Zap className="size-4" />
+                  )
+                }
+                disabled={isGenerating || isRepairing || prompt.length < 8}
+                onClick={handleGenerate}
+                className="flex-1"
+              >
+                {isGenerating
+                  ? "Generating..."
+                  : hasGenerated
+                    ? "Regenerate"
+                    : "Generate"}
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                leading={
+                  isRepairing ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="size-4" />
+                  )
+                }
+                disabled={
+                  isGenerating ||
+                  isRepairing ||
+                  runtimeMessages.every((message) => message.type === "ready")
+                }
+                onClick={handleRepair}
+              >
+                Fix
+              </Button>
+            </div>
+
+            {requestError && (
+              <div className="mt-3 rounded-lg border border-rose-300/20 bg-rose-500/10 p-3 text-xs text-rose-200">
+                {requestError}
               </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  leading={
-                    isGenerating ? (
-                      <LoaderCircle className="size-4 animate-spin" />
-                    ) : (
-                      <Sparkles className="size-4" />
-                    )
-                  }
-                  disabled={isGenerating || isRepairing}
-                  onClick={handleGenerate}
-                >
-                  Generate build
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  leading={
-                    isRepairing ? (
-                      <LoaderCircle className="size-4 animate-spin" />
-                    ) : (
-                      <Wand2 className="size-4" />
-                    )
-                  }
-                  disabled={
-                    isGenerating ||
-                    isRepairing ||
-                    runtimeMessages.every((message) => message.type === "ready")
-                  }
-                  onClick={handleRepair}
-                >
-                  Fix with AI
-                </Button>
-              </div>
-
-              <div className="rounded-[24px] border border-white/10 bg-white/4 p-4 text-sm leading-7 text-slate-300">
+            )}
+            {statusLine && (
+              <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-3 text-xs text-slate-300">
                 {statusLine}
               </div>
-              {requestError ? (
-                <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-4 text-sm text-rose-100">
-                  {requestError}
-                </div>
-              ) : null}
-            </div>
+            )}
           </Panel>
 
-          <Panel className="p-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                  Refined brief
-                </p>
-                <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.08em] text-white">
-                  AI-ready design notes
-                </h2>
-              </div>
-              {slug ? (
-                <Badge className="text-emerald-100">
-                  <CheckCircle2 className="size-3.5" />
-                  Saved
-                </Badge>
-              ) : null}
-            </div>
-
-            {refinement ? (
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <div className="space-y-4 rounded-[24px] border border-white/10 bg-white/4 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                    Gameplay loop
-                  </p>
-                  <ul className="space-y-2 text-sm text-slate-200">
-                    {refinement.gameplayLoop.map((item) => (
+          {/* Refined Brief (compact) */}
+          {refinement && hasGenerated && (
+            <Panel className="p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                Game Blueprint
+              </p>
+              <div className="mt-3 space-y-3">
+                <div>
+                  <p className="text-xs text-cyan-200">Gameplay</p>
+                  <ul className="mt-1 space-y-1 text-xs text-slate-300">
+                    {refinement.gameplayLoop.slice(0, 3).map((item) => (
                       <li key={item}>• {item}</li>
                     ))}
                   </ul>
                 </div>
-                <div className="space-y-4 rounded-[24px] border border-white/10 bg-white/4 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                    Style and constraints
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {[...refinement.visualStyle, ...refinement.constraints].map((item) => (
-                      <Badge key={item} className="border-white/8 text-slate-200 normal-case tracking-normal">
+                <div className="flex flex-wrap gap-1.5">
+                  {[...refinement.visualStyle, ...refinement.constraints]
+                    .slice(0, 6)
+                    .map((item) => (
+                      <Badge
+                        key={item}
+                        className="border-white/8 text-[10px] normal-case tracking-normal text-slate-300"
+                      >
                         {item}
                       </Badge>
                     ))}
-                  </div>
-                </div>
-                <div className="rounded-[24px] border border-cyan-300/14 bg-cyan-400/5 p-4 md:col-span-2">
-                  <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">
-                    Refined prompt
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-slate-100">
-                    {refinement.refinedPrompt}
-                  </p>
                 </div>
               </div>
-            ) : (
-              <div className="mt-4 rounded-[24px] border border-dashed border-white/10 p-5 text-sm text-slate-400">
-                Generate a build to see the structured brief that drives the HTML, CSS, and JavaScript output.
-              </div>
-            )}
-          </Panel>
+            </Panel>
+          )}
         </div>
 
-        <div className="space-y-6">
-          <Panel className="overflow-hidden p-5">
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <Badge
-                    className={cn(
-                      previewState === "error"
-                        ? "text-rose-100"
-                        : previewState === "ready"
-                          ? "text-emerald-100"
-                          : "text-cyan-200",
-                    )}
-                  >
-                    {previewState === "error" ? (
-                      <AlertTriangle className="size-3.5" />
-                    ) : previewState === "ready" ? (
-                      <Play className="size-3.5" />
-                    ) : (
-                      <LoaderCircle className="size-3.5 animate-spin" />
-                    )}
-                    {previewState === "error"
-                      ? "Runtime fault"
+        {/* Right Column - Preview & Code */}
+        <div
+          className={cn(
+            "space-y-4",
+            mobileView === "prompt" && "hidden lg:block",
+          )}
+        >
+          {/* Game Preview */}
+          <Panel className="overflow-hidden p-4">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Badge
+                  className={cn(
+                    previewState === "error"
+                      ? "border-rose-300/20 bg-rose-500/10 text-rose-200"
                       : previewState === "ready"
-                        ? "Preview live"
-                        : "Preview syncing"}
-                  </Badge>
-                  <Badge className="text-slate-300">
-                    <Shield className="size-3.5" />
-                    Sandboxed iframe
-                  </Badge>
-                </div>
-                <h2 className="font-display text-2xl uppercase tracking-[0.08em] text-white">
-                  Isolated execution preview
-                </h2>
+                        ? "border-emerald-300/20 bg-emerald-500/10 text-emerald-200"
+                        : "border-cyan-300/20 bg-cyan-500/10 text-cyan-200",
+                  )}
+                >
+                  {previewState === "error" ? (
+                    <AlertTriangle className="size-3" />
+                  ) : previewState === "ready" ? (
+                    <Play className="size-3" />
+                  ) : (
+                    <LoaderCircle className="size-3 animate-spin" />
+                  )}
+                  {previewState === "error"
+                    ? "Error"
+                    : previewState === "ready"
+                      ? "Ready"
+                      : "Loading"}
+                </Badge>
+                <Badge className="text-slate-300">
+                  <Shield className="size-3" />
+                  {title}
+                </Badge>
               </div>
-              <div className="flex flex-wrap gap-3">
-                {shareUrl ? <ShareLinkButton href={shareUrl} /> : null}
-                {slug ? (
-                  <Button asChild variant="secondary" leading={<ArrowUpRight className="size-4" />}>
-                    <Link href={`/play/${slug}`}>Open public page</Link>
-                  </Button>
-                ) : null}
+              <div className="flex gap-2">
+                {shareUrl && <ShareLinkButton href={shareUrl} />}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leading={<Save className="size-3.5" />}
+                  disabled={isSaving}
+                  onClick={() => saveGame(false)}
+                >
+                  Save
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leading={
+                    isSaving ? (
+                      <LoaderCircle className="size-3.5 animate-spin" />
+                    ) : (
+                      <Globe2 className="size-3.5" />
+                    )
+                  }
+                  disabled={isSaving}
+                  onClick={() => saveGame(true)}
+                >
+                  {hasPublished ? "Update" : "Publish"}
+                </Button>
               </div>
             </div>
 
             <GamePreview
               srcDoc={previewDocument}
-              title={`${title} live preview`}
+              title={title}
+              howToPlay={howToPlay}
               onRuntimeMessage={(message) => {
                 if (message.type === "ready") {
                   setPreviewState("ready");
@@ -508,17 +607,23 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
             />
           </Panel>
 
-          <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-            <Panel className="p-5">
-              <div className="flex flex-wrap gap-3">
+          {/* Code Editor & Console */}
+          <div
+            className={cn(
+              "grid gap-4 lg:grid-cols-[1.2fr_0.8fr]",
+              mobileView === "preview" && "hidden lg:grid",
+            )}
+          >
+            <Panel className="p-4">
+              <div className="mb-3 flex gap-2">
                 {(["html", "css", "javascript"] as const).map((tab) => (
                   <button
                     key={tab}
                     className={cn(
-                      "rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] transition",
+                      "rounded-lg border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] transition",
                       activeTab === tab
                         ? tabStyles[tab]
-                        : "border-white/10 bg-white/4 text-slate-400 hover:text-white",
+                        : "border-white/10 bg-white/5 text-slate-400 hover:text-white",
                     )}
                     onClick={() => setActiveTab(tab)}
                     type="button"
@@ -527,71 +632,61 @@ export function StudioShell({ initialGame }: { initialGame: StudioGame | null })
                   </button>
                 ))}
               </div>
-              <div className="mt-5">
-                <CodeEditor
-                  language={activeTab}
-                  value={bundle[activeTab === "javascript" ? "js" : activeTab]}
-                  onChange={(value) => {
-                    if (activeTab === "javascript") {
-                      updateBundlePart("js", value);
-                      return;
-                    }
+              <CodeEditor
+                language={activeTab}
+                value={bundle[activeTab === "javascript" ? "js" : activeTab]}
+                onChange={(value) => {
+                  if (activeTab === "javascript") {
+                    updateBundlePart("js", value);
+                    return;
+                  }
 
-                    updateBundlePart(activeTab, value);
-                  }}
-                />
-              </div>
+                  updateBundlePart(activeTab, value);
+                }}
+              />
             </Panel>
 
-            <Panel className="p-5">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                    Runtime console
-                  </p>
-                  <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.08em] text-white">
-                    Fault trace
-                  </h2>
-                </div>
-                <div className="space-y-3">
-                  {runtimeMessages.length ? (
-                    runtimeMessages.map((message, index) => (
-                      <div
-                        key={`${message.type}-${message.message ?? index}-${index}`}
-                        className="rounded-[22px] border border-white/8 bg-white/4 p-4 text-sm text-slate-200"
-                      >
-                        <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-slate-400">
-                          <Code2 className="size-3.5" />
-                          {message.type.replace("-", " ")}
-                        </div>
-                        <p className="leading-7 text-slate-100">
-                          {message.message ?? "Preview updated."}
-                        </p>
-                        {message.stack ? (
-                          <pre className="mt-3 overflow-x-auto rounded-2xl border border-white/6 bg-[#070b18] p-3 text-xs text-slate-400">
-                            {message.stack}
-                          </pre>
-                        ) : null}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-[22px] border border-dashed border-white/10 p-5 text-sm leading-7 text-slate-400">
-                      No runtime faults yet. Generate or edit code, then the sandbox will post errors back here automatically.
-                    </div>
-                  )}
-                </div>
+            <Panel className="p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                  Console
+                </p>
+                {runtimeMessages.length > 0 && (
+                  <Badge className="border-rose-300/20 bg-rose-500/10 text-rose-200">
+                    {runtimeMessages.length}
+                  </Badge>
+                )}
+              </div>
 
-                <div className="rounded-[22px] border border-white/8 bg-white/4 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                    How to play
+              <div className="mt-3 space-y-2">
+                {runtimeMessages.length > 0 ? (
+                  runtimeMessages.slice(0, 3).map((message, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg border border-rose-300/20 bg-rose-500/5 p-3 text-xs"
+                    >
+                      <p className="text-rose-200">{message.message}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="rounded-lg border border-dashed border-white/10 p-4 text-center text-xs text-slate-500">
+                    {hasGenerated ? "No errors" : "Generate to see output"}
                   </p>
-                  <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-200">
-                    {howToPlay.map((item) => (
-                      <li key={item}>• {item}</li>
+                )}
+              </div>
+
+              {howToPlay.length > 0 && (
+                <div className="mt-3 rounded-lg border border-cyan-300/14 bg-cyan-400/5 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-cyan-200">
+                    How to Play
+                  </p>
+                  <ul className="mt-2 space-y-1 text-xs text-slate-300">
+                    {howToPlay.slice(0, 3).map((item, index) => (
+                      <li key={index}>• {item}</li>
                     ))}
                   </ul>
                 </div>
-              </div>
+              )}
             </Panel>
           </div>
         </div>
