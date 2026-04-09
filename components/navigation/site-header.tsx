@@ -15,6 +15,9 @@ export function SiteHeader() {
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm text-gray-500 md:flex">
+            <Link href="/games" className="hover:text-gray-900">
+              Games
+            </Link>
             <Link href="/dashboard" className="hover:text-gray-900">
               Dashboard
             </Link>

@@ -5845,8 +5845,18 @@ export namespace Prisma {
 
   export type AggregateGame = {
     _count: GameCountAggregateOutputType | null
+    _avg: GameAvgAggregateOutputType | null
+    _sum: GameSumAggregateOutputType | null
     _min: GameMinAggregateOutputType | null
     _max: GameMaxAggregateOutputType | null
+  }
+
+  export type GameAvgAggregateOutputType = {
+    totalPlays: number | null
+  }
+
+  export type GameSumAggregateOutputType = {
+    totalPlays: number | null
   }
 
   export type GameMinAggregateOutputType = {
@@ -5862,6 +5872,7 @@ export namespace Prisma {
     jsCode: string | null
     isPublic: boolean | null
     publishedAt: Date | null
+    totalPlays: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5879,6 +5890,7 @@ export namespace Prisma {
     jsCode: string | null
     isPublic: boolean | null
     publishedAt: Date | null
+    totalPlays: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5896,11 +5908,21 @@ export namespace Prisma {
     jsCode: number
     isPublic: number
     publishedAt: number
+    totalPlays: number
+    highScores: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type GameAvgAggregateInputType = {
+    totalPlays?: true
+  }
+
+  export type GameSumAggregateInputType = {
+    totalPlays?: true
+  }
 
   export type GameMinAggregateInputType = {
     id?: true
@@ -5915,6 +5937,7 @@ export namespace Prisma {
     jsCode?: true
     isPublic?: true
     publishedAt?: true
+    totalPlays?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5932,6 +5955,7 @@ export namespace Prisma {
     jsCode?: true
     isPublic?: true
     publishedAt?: true
+    totalPlays?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5949,6 +5973,8 @@ export namespace Prisma {
     jsCode?: true
     isPublic?: true
     publishedAt?: true
+    totalPlays?: true
+    highScores?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -5992,6 +6018,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: GameAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GameSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: GameMinAggregateInputType
@@ -6022,6 +6060,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: GameCountAggregateInputType | true
+    _avg?: GameAvgAggregateInputType
+    _sum?: GameSumAggregateInputType
     _min?: GameMinAggregateInputType
     _max?: GameMaxAggregateInputType
   }
@@ -6039,9 +6079,13 @@ export namespace Prisma {
     jsCode: string
     isPublic: boolean
     publishedAt: Date | null
+    totalPlays: number
+    highScores: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: GameCountAggregateOutputType | null
+    _avg: GameAvgAggregateOutputType | null
+    _sum: GameSumAggregateOutputType | null
     _min: GameMinAggregateOutputType | null
     _max: GameMaxAggregateOutputType | null
   }
@@ -6073,6 +6117,8 @@ export namespace Prisma {
     jsCode?: boolean
     isPublic?: boolean
     publishedAt?: boolean
+    totalPlays?: boolean
+    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6093,6 +6139,8 @@ export namespace Prisma {
     jsCode?: boolean
     isPublic?: boolean
     publishedAt?: boolean
+    totalPlays?: boolean
+    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6111,6 +6159,8 @@ export namespace Prisma {
     jsCode?: boolean
     isPublic?: boolean
     publishedAt?: boolean
+    totalPlays?: boolean
+    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6129,11 +6179,13 @@ export namespace Prisma {
     jsCode?: boolean
     isPublic?: boolean
     publishedAt?: boolean
+    totalPlays?: boolean
+    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "description" | "prompt" | "refinedPrompt" | "htmlCode" | "cssCode" | "jsCode" | "isPublic" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["game"]>
+  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "description" | "prompt" | "refinedPrompt" | "htmlCode" | "cssCode" | "jsCode" | "isPublic" | "publishedAt" | "totalPlays" | "highScores" | "createdAt" | "updatedAt", ExtArgs["result"]["game"]>
   export type GameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     versions?: boolean | Game$versionsArgs<ExtArgs>
@@ -6165,6 +6217,8 @@ export namespace Prisma {
       jsCode: string
       isPublic: boolean
       publishedAt: Date | null
+      totalPlays: number
+      highScores: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["game"]>
@@ -6604,6 +6658,8 @@ export namespace Prisma {
     readonly jsCode: FieldRef<"Game", 'String'>
     readonly isPublic: FieldRef<"Game", 'Boolean'>
     readonly publishedAt: FieldRef<"Game", 'DateTime'>
+    readonly totalPlays: FieldRef<"Game", 'Int'>
+    readonly highScores: FieldRef<"Game", 'Json'>
     readonly createdAt: FieldRef<"Game", 'DateTime'>
     readonly updatedAt: FieldRef<"Game", 'DateTime'>
   }
@@ -8236,6 +8292,8 @@ export namespace Prisma {
     jsCode: 'jsCode',
     isPublic: 'isPublic',
     publishedAt: 'publishedAt',
+    totalPlays: 'totalPlays',
+    highScores: 'highScores',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8265,6 +8323,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -8279,6 +8345,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -8332,6 +8407,34 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -8648,6 +8751,8 @@ export namespace Prisma {
     jsCode?: StringFilter<"Game"> | string
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
+    totalPlays?: IntFilter<"Game"> | number
+    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -8667,6 +8772,8 @@ export namespace Prisma {
     jsCode?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrderInput | SortOrder
+    totalPlays?: SortOrder
+    highScores?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -8689,6 +8796,8 @@ export namespace Prisma {
     jsCode?: StringFilter<"Game"> | string
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
+    totalPlays?: IntFilter<"Game"> | number
+    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -8708,11 +8817,15 @@ export namespace Prisma {
     jsCode?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrderInput | SortOrder
+    totalPlays?: SortOrder
+    highScores?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: GameCountOrderByAggregateInput
+    _avg?: GameAvgOrderByAggregateInput
     _max?: GameMaxOrderByAggregateInput
     _min?: GameMinOrderByAggregateInput
+    _sum?: GameSumOrderByAggregateInput
   }
 
   export type GameScalarWhereWithAggregatesInput = {
@@ -8731,6 +8844,8 @@ export namespace Prisma {
     jsCode?: StringWithAggregatesFilter<"Game"> | string
     isPublic?: BoolWithAggregatesFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableWithAggregatesFilter<"Game"> | Date | string | null
+    totalPlays?: IntWithAggregatesFilter<"Game"> | number
+    highScores?: JsonNullableWithAggregatesFilter<"Game">
     createdAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
   }
@@ -9149,6 +9264,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGamesInput
@@ -9168,6 +9285,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
@@ -9185,6 +9304,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGamesNestedInput
@@ -9204,6 +9325,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
@@ -9222,6 +9345,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9238,6 +9363,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9255,6 +9382,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9647,6 +9776,40 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type GameVersionListRelationFilter = {
     every?: GameVersionWhereInput
     some?: GameVersionWhereInput
@@ -9670,8 +9833,14 @@ export namespace Prisma {
     jsCode?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
+    totalPlays?: SortOrder
+    highScores?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type GameAvgOrderByAggregateInput = {
+    totalPlays?: SortOrder
   }
 
   export type GameMaxOrderByAggregateInput = {
@@ -9687,6 +9856,7 @@ export namespace Prisma {
     jsCode?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
+    totalPlays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -9704,8 +9874,55 @@ export namespace Prisma {
     jsCode?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
+    totalPlays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type GameSumOrderByAggregateInput = {
+    totalPlays?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type GameScalarRelationFilter = {
@@ -9940,6 +10157,14 @@ export namespace Prisma {
     connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutGamesNestedInput = {
     create?: XOR<UserCreateWithoutGamesInput, UserUncheckedCreateWithoutGamesInput>
     connectOrCreate?: UserCreateOrConnectWithoutGamesInput
@@ -10137,6 +10362,56 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type AccountCreateWithoutUserInput = {
     id?: string
     accountId: string
@@ -10219,6 +10494,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionCreateNestedManyWithoutGameInput
@@ -10236,6 +10513,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
@@ -10348,6 +10627,8 @@ export namespace Prisma {
     jsCode?: StringFilter<"Game"> | string
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
+    totalPlays?: IntFilter<"Game"> | number
+    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
   }
@@ -10616,6 +10897,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGamesInput
@@ -10634,6 +10917,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10666,6 +10951,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGamesNestedInput
@@ -10684,6 +10971,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10725,6 +11014,8 @@ export namespace Prisma {
     jsCode: string
     isPublic?: boolean
     publishedAt?: Date | string | null
+    totalPlays?: number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10816,6 +11107,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUpdateManyWithoutGameNestedInput
@@ -10833,6 +11126,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
@@ -10850,6 +11145,8 @@ export namespace Prisma {
     jsCode?: StringFieldUpdateOperationsInput | string
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

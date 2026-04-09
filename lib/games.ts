@@ -37,6 +37,26 @@ export async function listPublicGames(limit = 6) {
   });
 }
 
+export async function listAllPublicGames() {
+  if (!hasDatabaseConfig()) {
+    return [];
+  }
+
+  return db.game.findMany({
+    where: { isPublic: true },
+    orderBy: [{ publishedAt: "desc" }],
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+}
+
 export async function listGamesForUser(userId: string) {
   if (!hasDatabaseConfig()) {
     return [];
@@ -70,6 +90,27 @@ export async function getPublicGameBySlug(slug: string) {
     where: {
       slug,
       isPublic: true,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getGameById(gameId: string) {
+  if (!hasDatabaseConfig()) {
+    return null;
+  }
+
+  return db.game.findFirst({
+    where: {
+      id: gameId,
     },
     include: {
       user: {
