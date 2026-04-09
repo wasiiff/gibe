@@ -1,6 +1,6 @@
 "use client";
 
-import { GitFork, LoaderCircle } from "lucide-react";
+import { GitFork, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -48,9 +48,10 @@ export function RemixButton({
     <div className={className}>
       <Button
         variant="secondary"
+        className="w-full"
         leading={
           isRemixing ? (
-            <LoaderCircle className="size-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
             <GitFork className="size-4" />
           )
@@ -60,9 +61,7 @@ export function RemixButton({
       >
         {isRemixing ? "Remixing..." : "Remix"}
       </Button>
-      {error && (
-        <p className="mt-2 text-xs text-rose-300">{error}</p>
-      )}
+      {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
     </div>
   );
 }

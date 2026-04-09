@@ -21,44 +21,42 @@ export function StepIndicator({ steps, className }: StepIndicatorProps) {
     <div className={cn("flex items-center gap-2", className)}>
       {steps.map((step, index) => (
         <div key={step.number} className="flex items-center gap-2">
-          {/* Step Circle */}
           <div className="flex items-center gap-2">
             <div
               className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300",
+                "flex h-6 w-6 items-center justify-center rounded-full border transition-all",
                 step.active
-                  ? "border-cyan-400 bg-cyan-400/20 text-cyan-200"
+                  ? "border-gray-900 bg-gray-900 text-white"
                   : step.completed
-                    ? "border-emerald-400 bg-emerald-400/20 text-emerald-200"
-                    : "border-white/20 bg-white/5 text-slate-500",
+                    ? "border-green-500 bg-green-50 text-green-700"
+                    : "border-gray-200 bg-gray-100 text-gray-400",
               )}
             >
               {step.completed ? (
-                <CheckCircle2 className="size-4" />
+                <CheckCircle2 className="size-3.5" />
               ) : (
-                <span className="text-xs font-bold">{step.number}</span>
+                <span className="text-[10px] font-bold">{step.number}</span>
               )}
             </div>
             <span
               className={cn(
                 "text-xs font-medium transition-colors",
                 step.active
-                  ? "text-cyan-200"
+                  ? "text-gray-900"
                   : step.completed
-                    ? "text-emerald-200"
-                    : "text-slate-500",
+                    ? "text-green-700"
+                    : "text-gray-400",
               )}
             >
               {step.label}
             </span>
           </div>
 
-          {/* Connector Line */}
           {index < steps.length - 1 && (
             <div
               className={cn(
-                "h-px w-8 transition-colors",
-                step.completed ? "bg-emerald-400/40" : "bg-white/10",
+                "h-px w-6 transition-colors",
+                step.completed ? "bg-green-400" : "bg-gray-200",
               )}
             />
           )}

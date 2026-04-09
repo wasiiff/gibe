@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, LoaderCircle } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,7 @@ export function DeleteGameButton({
       <Button
         variant="ghost"
         size="sm"
-        leading={<Trash2 className="size-4" />}
+        leading={<Trash2 className="size-3.5" />}
         disabled={disabled || isDeleting}
         onClick={() => setShowConfirm(true)}
       >
@@ -54,15 +54,15 @@ export function DeleteGameButton({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-rose-300">Confirm delete?</span>
+      <span className="text-xs text-red-600">Delete?</span>
       <Button
         variant="danger"
         size="sm"
         leading={
           isDeleting ? (
-            <LoaderCircle className="size-4 animate-spin" />
+            <Loader2 className="size-3.5 animate-spin" />
           ) : (
-            <Trash2 className="size-4" />
+            <Trash2 className="size-3.5" />
           )
         }
         disabled={isDeleting}

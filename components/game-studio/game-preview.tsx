@@ -101,7 +101,7 @@ export function GamePreview({
         sandbox="allow-scripts allow-pointer-lock"
         referrerPolicy="no-referrer"
         className={cn(
-          "min-h-[400px] w-full rounded-[28px] border border-white/10 bg-[#050816] md:min-h-[520px]",
+          "min-h-[400px] w-full rounded-xl border border-gray-200 bg-white md:min-h-[520px]",
           className,
         )}
         srcDoc={srcDoc}

@@ -14,32 +14,32 @@ type CodeEditorProps = {
 
 export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
   return (
-    <div className="min-h-[420px] overflow-hidden rounded-[24px] border border-white/10 bg-[#070b18]">
+    <div className="min-h-[420px] overflow-hidden rounded-xl border border-gray-200 bg-white">
       <MonacoEditor
         beforeMount={(monaco) => {
-          monaco.editor.defineTheme("gibe-night", {
-            base: "vs-dark",
+          monaco.editor.defineTheme("gibe-light", {
+            base: "vs",
             inherit: true,
             rules: [
-              { token: "comment", foreground: "5b6c99" },
-              { token: "keyword", foreground: "7CFFC5" },
-              { token: "string", foreground: "ffbe5c" },
-              { token: "number", foreground: "69a4ff" },
+              { token: "comment", foreground: "6B7280" },
+              { token: "keyword", foreground: "2563EB" },
+              { token: "string", foreground: "D97706" },
+              { token: "number", foreground: "059669" },
             ],
             colors: {
-              "editor.background": "#070b18",
-              "editor.lineHighlightBackground": "#11182d",
-              "editorCursor.foreground": "#4DE2FF",
-              "editor.selectionBackground": "#173259",
-              "editor.inactiveSelectionBackground": "#0f223d",
-              "editorLineNumber.foreground": "#516181",
-              "editorLineNumber.activeForeground": "#cad4f8",
+              "editor.background": "#F9FAFB",
+              "editor.lineHighlightBackground": "#F3F4F6",
+              "editorCursor.foreground": "#2563EB",
+              "editor.selectionBackground": "#DBEAFE",
+              "editor.inactiveSelectionBackground": "#E5E7EB",
+              "editorLineNumber.foreground": "#9CA3AF",
+              "editorLineNumber.activeForeground": "#374151",
             },
           });
         }}
         height="420px"
         language={language}
-        theme="gibe-night"
+        theme="gibe-light"
         value={value}
         onChange={(nextValue) => onChange(nextValue ?? "")}
         options={{
@@ -58,4 +58,3 @@ export function CodeEditor({ language, value, onChange }: CodeEditorProps) {
     </div>
   );
 }
-

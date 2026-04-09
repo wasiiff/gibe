@@ -17,18 +17,19 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
   primary:
-    "border-cyan-300/40 bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 shadow-[0_16px_40px_rgba(77,226,255,0.28)] hover:from-cyan-300 hover:to-blue-400",
+    "border border-gray-900 bg-gray-900 text-white hover:bg-gray-800 hover:border-gray-800",
   secondary:
-    "border-white/12 bg-white/6 text-white hover:border-cyan-300/30 hover:bg-white/10",
-  ghost: "border-transparent bg-transparent text-slate-300 hover:bg-white/6 hover:text-white",
+    "border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50",
+  ghost:
+    "border-transparent bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700",
   danger:
-    "border-rose-300/30 bg-rose-500/18 text-rose-100 hover:border-rose-300/45 hover:bg-rose-500/26",
+    "border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 hover:border-red-400",
 };
 
 const sizeStyles: Record<NonNullable<ButtonProps["size"]>, string> = {
-  sm: "h-10 px-4 text-sm",
-  md: "h-11 px-5 text-sm",
-  lg: "h-12 px-6 text-base",
+  sm: "h-9 px-4 text-sm",
+  md: "h-10 px-5 text-sm",
+  lg: "h-11 px-6 text-base",
 };
 
 export function Button({
@@ -41,7 +42,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-full border font-medium transition-transform duration-200 ease-out disabled:cursor-not-allowed disabled:opacity-55 hover:-translate-y-0.5 active:translate-y-0",
+    "inline-flex items-center justify-center gap-2 rounded-lg border font-medium transition disabled:cursor-not-allowed disabled:opacity-50",
     variantStyles[variant],
     sizeStyles[size],
     className,
@@ -65,10 +66,7 @@ export function Button({
   }
 
   return (
-    <button
-      className={classes}
-      {...props}
-    >
+    <button className={classes} {...props}>
       {leading}
       {children}
     </button>

@@ -39,14 +39,14 @@ export class StudioErrorBoundary extends Component<Props, State> {
       return (
         <Panel className="p-8">
           <div className="flex flex-col items-center gap-4 text-center">
-            <div className="rounded-full border border-rose-300/20 bg-rose-500/10 p-4">
-              <AlertTriangle className="size-8 text-rose-300" />
+            <div className="rounded-full border border-red-200 bg-red-50 p-4">
+              <AlertTriangle className="size-8 text-red-500" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-display text-xl uppercase tracking-[0.08em] text-white">
+              <h3 className="font-display text-xl uppercase tracking-[0.06em] text-gray-900">
                 Something went wrong
               </h3>
-              <p className="max-w-md text-sm leading-7 text-slate-300">
+              <p className="max-w-md text-sm leading-6 text-gray-500">
                 {this.state.error?.message ?? "An unexpected error occurred."}
               </p>
             </div>

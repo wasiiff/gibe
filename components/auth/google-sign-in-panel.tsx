@@ -1,10 +1,9 @@
 "use client";
 
-import { AlertCircle, ArrowRight, LoaderCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Panel } from "@/components/ui/panel";
 import { authClient } from "@/lib/auth-client";
 
 function GoogleGlyph() {
@@ -30,67 +29,58 @@ function GoogleGlyph() {
   );
 }
 
-export function GoogleSignInPanel({ googleEnabled }: { googleEnabled: boolean }) {
+export function GoogleSignInPanel() {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const googleEnabled = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID !== undefined;
 
   return (
-    <Panel className="max-w-xl p-8">
-      <div className="space-y-4">
-        <p className="text-xs uppercase tracking-[0.22em] text-cyan-200">
-          Authenticate
-        </p>
-        <h1 className="font-display text-4xl uppercase tracking-[0.08em] text-white">
-          Enter the Game Forge
-        </h1>
-        <p className="text-sm leading-7 text-slate-300">
-          Sign in with Google to save private builds, reopen your editor sessions,
-          and publish live game links from the dashboard.
-        </p>
-      </div>
-
-      <div className="mt-8 space-y-4">
-        <Button
-          className="w-full"
-          size="lg"
-          variant="primary"
-          leading={pending ? <LoaderCircle className="size-4 animate-spin" /> : <GoogleGlyph />}
-          disabled={!googleEnabled || pending}
-          onClick={() => {
-            setError(null);
-            startTransition(async () => {
-              try {
-                await authClient.signIn.social({
-                  provider: "google",
-                  callbackURL: "/dashboard",
-                });
-              } catch (nextError) {
-                setError(
-                  nextError instanceof Error
-                    ? nextError.message
-                    : "Unable to start Google sign-in.",
-                );
-              }
-            });
-          }}
-        >
-          Continue with Google
-          <ArrowRight className="size-4" />
-        </Button>
-        {!googleEnabled ? (
-          <div className="flex items-start gap-3 rounded-3xl border border-amber-300/20 bg-amber-400/8 p-4 text-sm text-amber-100">
-            <AlertCircle className="mt-0.5 size-4 shrink-0" />
-            Google auth is disabled until `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
-            `BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL` are configured.
-          </div>
-        ) : null}
-        {error ? (
-          <div className="rounded-3xl border border-rose-300/20 bg-rose-500/10 p-4 text-sm text-rose-100">
-            {error}
-          </div>
-        ) : null}
-      </div>
-    </Panel>
+    <div className="space-y-4">
+      <Button
+        className="w-full"
+        size="lg"
+        variant="secondary"
+        leading={
+          pending ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <GoogleGlyph />
+          )
+        }
+        disabled={!googleEnabled || pending}
+        onClick={() => {
+          setError(null);
+          startTransition(async () => {
+            try {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/dashboard",
+              });
+            } catch (nextError) {
+              setError(
+                nextError instanceof Error
+                  ? nextError.message
+                  : "Unable to start Google sign-in.",
+              );
+            }
+          });
+        }}
+      >
+        Continue with Google
+      </Button>
+      {!googleEnabled && (
+        <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <AlertCircle className="mt-0.5 size-4 shrink-0 text-amber-600" />
+          <p>
+            Google auth is disabled until environment variables are configured.
+          </p>
+        </div>
+      )}
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+    </div>
   );
 }
-

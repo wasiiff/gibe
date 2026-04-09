@@ -50,13 +50,13 @@ type StudioGame = {
 };
 
 const tabStyles = {
-  html: "border-amber-300/20 bg-amber-400/10 text-amber-100",
-  css: "border-cyan-300/20 bg-cyan-400/10 text-cyan-100",
-  javascript: "border-emerald-300/20 bg-emerald-400/10 text-emerald-100",
+  html: "border-amber-300 bg-amber-50 text-amber-700",
+  css: "border-blue-300 bg-blue-50 text-blue-700",
+  javascript: "border-emerald-300 bg-emerald-50 text-emerald-700",
 } as const;
 
 const defaultPrompt =
-  "Build a neon survival arena where the player dodges hazards, grabs energy shards, and chases a high score combo.";
+  "Build a survival arena where the player dodges hazards and collects points.";
 
 type ViewMode = "prompt" | "preview" | "code";
 
@@ -98,9 +98,7 @@ export function StudioShell({
   >("syncing");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [statusLine, setStatusLine] = useState<string>(
-    initialGame
-      ? "Edit code or regenerate. Publish when ready."
-      : "Describe your game idea to get started.",
+    initialGame ? "Edit or regenerate." : "Describe your game idea.",
   );
   const [isGenerating, startGenerateTransition] = useTransition();
   const [isRepairing, startRepairTransition] = useTransition();
@@ -130,13 +128,13 @@ export function StudioShell({
       number: 2,
       label: "Generate",
       completed: hasGenerated,
-      active: !hasGenerated && isGenerating,
+      active: isGenerating,
     },
     {
       number: 3,
       label: "Play",
       completed: previewState === "ready",
-      active: hasGenerated && previewState === "ready",
+      active: previewState === "ready",
     },
     {
       number: 4,
@@ -155,11 +153,7 @@ export function StudioShell({
   async function requestJson<T>(input: RequestInfo, init?: RequestInit) {
     const response = await fetch(input, init);
     const data = (await response.json()) as T & { error?: string };
-
-    if (!response.ok) {
-      throw new Error(data.error ?? "Request failed.");
-    }
-
+    if (!response.ok) throw new Error(data.error ?? "Request failed.");
     return data;
   }
 
@@ -180,16 +174,13 @@ export function StudioShell({
   }
 
   function pushRuntimeMessage(message: RuntimeMessage) {
-    setRuntimeMessages((current) => {
-      const next = [message, ...current];
-      return next.slice(0, 8);
-    });
+    setRuntimeMessages((current) => [message, ...current].slice(0, 8));
   }
 
   async function handleGenerate() {
     setRequestError(null);
     setShowTemplates(false);
-    setStatusLine("Generating game...");
+    setStatusLine("Generating...");
     startGenerateTransition(async () => {
       try {
         const payload = await requestJson<{
@@ -204,12 +195,9 @@ export function StudioShell({
           };
         }>("/api/ai/generate", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt }),
         });
-
         setTitle(payload.game.title);
         setDescription(payload.game.description);
         setRefinement(payload.refinement);
@@ -221,15 +209,13 @@ export function StudioShell({
         });
         setHasGenerated(true);
         setPreviewState("ready");
-        setStatusLine("Game ready! Play it or publish when satisfied.");
+        setStatusLine("Ready! Play or publish.");
         setMobileView("preview");
       } catch (error) {
         const message =
-          error instanceof Error
-            ? error.message
-            : "Unable to generate the game.";
+          error instanceof Error ? error.message : "Unable to generate.";
         setRequestError(message);
-        setStatusLine("Generation failed. Try again.");
+        setStatusLine("Failed. Try again.");
       }
     });
   }
@@ -238,13 +224,9 @@ export function StudioShell({
     const latestRuntimeMessage = runtimeMessages.find(
       (entry) => entry.type !== "ready",
     );
-
-    if (!latestRuntimeMessage || !refinement) {
-      return;
-    }
-
+    if (!latestRuntimeMessage || !refinement) return;
     setRequestError(null);
-    setStatusLine("Fixing error...");
+    setStatusLine("Fixing...");
     startRepairTransition(async () => {
       try {
         const payload = await requestJson<{
@@ -254,29 +236,21 @@ export function StudioShell({
           js: string;
         }>("/api/ai/fix", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             prompt,
             refinement,
             bundle,
-            runtimeError:
-              latestRuntimeMessage.message ?? "Unknown runtime error",
+            runtimeError: latestRuntimeMessage.message ?? "Unknown error",
           }),
         });
-
-        applyBundle({
-          html: payload.html,
-          css: payload.css,
-          js: payload.js,
-        });
+        applyBundle({ html: payload.html, css: payload.css, js: payload.js });
         setStatusLine(payload.summary);
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Unable to repair the game.";
+          error instanceof Error ? error.message : "Unable to repair.";
         setRequestError(message);
-        setStatusLine("Repair failed. Try again.");
+        setStatusLine("Repair failed.");
       }
     });
   }
@@ -296,38 +270,26 @@ export function StudioShell({
           jsCode: bundle.js,
           isPublic,
         };
-
         const endpoint = gameId ? `/api/games/${gameId}` : "/api/games";
         const method = gameId ? "PATCH" : "POST";
         const payload = await requestJson<{
-          game: {
-            id: string;
-            slug: string;
-            isPublic: boolean;
-          };
+          game: { id: string; slug: string; isPublic: boolean };
         }>(endpoint, {
           method,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-
         setGameId(payload.game.id);
         setSlug(payload.game.slug);
         setHasPublished(payload.game.isPublic);
-        setStatusLine(
-          payload.game.isPublic
-            ? "Published! Share the link."
-            : "Saved to dashboard.",
-        );
+        setStatusLine(payload.game.isPublic ? "Published!" : "Saved.");
         router.replace(`/studio/${payload.game.id}`);
         router.refresh();
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Unable to save the game.";
+          error instanceof Error ? error.message : "Unable to save.";
         setRequestError(message);
-        setStatusLine("Save failed. Try again.");
+        setStatusLine("Save failed.");
       }
     });
   }
@@ -335,17 +297,15 @@ export function StudioShell({
   function handleTemplateSelect(templatePrompt: string) {
     setPrompt(templatePrompt);
     setShowTemplates(false);
-    setStatusLine("Template loaded. Click Generate to create your game.");
+    setStatusLine("Template loaded. Click Generate.");
   }
 
   return (
     <div className="space-y-4">
-      {/* Step Indicator */}
       <Panel className="p-3">
         <StepIndicator steps={steps} />
       </Panel>
 
-      {/* Mobile View Switcher */}
       <div className="flex gap-2 lg:hidden">
         {(["prompt", "preview", "code"] as const).map((view) => (
           <Button
@@ -370,7 +330,6 @@ export function StudioShell({
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_1.6fr]">
-        {/* Left Column - Prompt & Controls */}
         <div
           className={cn(
             "space-y-4",
@@ -379,34 +338,31 @@ export function StudioShell({
         >
           <Panel className="p-5">
             <div className="mb-4 flex items-center justify-between">
-              <Badge className="text-cyan-200">
-                <Sparkles className="size-3.5" />
+              <Badge className="border-blue-200 bg-blue-50 text-blue-700">
+                <Sparkles className="size-3" />
                 Step 1
               </Badge>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowTemplates(!showTemplates)}
-                >
-                  {showTemplates ? "Hide" : "Templates"}
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTemplates(!showTemplates)}
+              >
+                {showTemplates ? "Hide" : "Templates"}
+              </Button>
             </div>
 
             <label className="block space-y-2">
-              <span className="block text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+              <span className="block text-xs font-medium uppercase tracking-[0.18em] text-gray-400">
                 Game Idea
               </span>
               <textarea
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
-                className="min-h-[100px] w-full rounded-[12px] border border-white/10 bg-white/5 px-3 py-2.5 text-sm leading-6 text-white placeholder-slate-500 outline-none transition focus:border-cyan-400/50"
+                className="min-h-[100px] w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm leading-6 text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-400"
                 placeholder="A platformer where you jump between clouds..."
               />
             </label>
 
-            {/* Templates (collapsible) */}
             {showTemplates && (
               <div className="mt-4">
                 <PromptTemplates onSelect={handleTemplateSelect} />
@@ -415,24 +371,24 @@ export function StudioShell({
 
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               <label className="block space-y-1.5">
-                <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                <span className="block text-xs uppercase tracking-[0.18em] text-gray-400">
                   Title
                 </span>
                 <input
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  className="h-9 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white outline-none transition focus:border-cyan-400/50"
+                  className="h-9 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-900 outline-none transition focus:border-blue-400"
                   placeholder="Game name"
                 />
               </label>
               <label className="block space-y-1.5">
-                <span className="block text-xs uppercase tracking-[0.18em] text-slate-400">
+                <span className="block text-xs uppercase tracking-[0.18em] text-gray-400">
                   Description
                 </span>
                 <input
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
-                  className="h-9 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white outline-none transition focus:border-cyan-400/50"
+                  className="h-9 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-900 outline-none transition focus:border-blue-400"
                   placeholder="Short description"
                 />
               </label>
@@ -472,7 +428,7 @@ export function StudioShell({
                 disabled={
                   isGenerating ||
                   isRepairing ||
-                  runtimeMessages.every((message) => message.type === "ready")
+                  runtimeMessages.every((m) => m.type === "ready")
                 }
                 onClick={handleRepair}
               >
@@ -481,27 +437,26 @@ export function StudioShell({
             </div>
 
             {requestError && (
-              <div className="mt-3 rounded-lg border border-rose-300/20 bg-rose-500/10 p-3 text-xs text-rose-200">
+              <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">
                 {requestError}
               </div>
             )}
             {statusLine && (
-              <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-3 text-xs text-slate-300">
+              <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-600">
                 {statusLine}
               </div>
             )}
           </Panel>
 
-          {/* Refined Brief (compact) */}
           {refinement && hasGenerated && (
             <Panel className="p-4">
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+              <p className="text-xs uppercase tracking-[0.18em] text-gray-400">
                 Game Blueprint
               </p>
               <div className="mt-3 space-y-3">
                 <div>
-                  <p className="text-xs text-cyan-200">Gameplay</p>
-                  <ul className="mt-1 space-y-1 text-xs text-slate-300">
+                  <p className="text-xs font-medium text-blue-600">Gameplay</p>
+                  <ul className="mt-1 space-y-1 text-xs text-gray-600">
                     {refinement.gameplayLoop.slice(0, 3).map((item) => (
                       <li key={item}>• {item}</li>
                     ))}
@@ -513,7 +468,7 @@ export function StudioShell({
                     .map((item) => (
                       <Badge
                         key={item}
-                        className="border-white/8 text-[10px] normal-case tracking-normal text-slate-300"
+                        className="border-gray-200 bg-gray-50 text-[10px] normal-case text-gray-600"
                       >
                         {item}
                       </Badge>
@@ -524,24 +479,22 @@ export function StudioShell({
           )}
         </div>
 
-        {/* Right Column - Preview & Code */}
         <div
           className={cn(
             "space-y-4",
             mobileView === "prompt" && "hidden lg:block",
           )}
         >
-          {/* Game Preview */}
           <Panel className="overflow-hidden p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Badge
                   className={cn(
                     previewState === "error"
-                      ? "border-rose-300/20 bg-rose-500/10 text-rose-200"
+                      ? "border-red-200 bg-red-50 text-red-700"
                       : previewState === "ready"
-                        ? "border-emerald-300/20 bg-emerald-500/10 text-emerald-200"
-                        : "border-cyan-300/20 bg-cyan-500/10 text-cyan-200",
+                        ? "border-green-200 bg-green-50 text-green-700"
+                        : "border-blue-200 bg-blue-50 text-blue-700",
                   )}
                 >
                   {previewState === "error" ? (
@@ -557,7 +510,7 @@ export function StudioShell({
                       ? "Ready"
                       : "Loading"}
                 </Badge>
-                <Badge className="text-slate-300">
+                <Badge className="border-gray-200 bg-gray-50 text-gray-600">
                   <Shield className="size-3" />
                   {title}
                 </Badge>
@@ -590,7 +543,6 @@ export function StudioShell({
                 </Button>
               </div>
             </div>
-
             <GamePreview
               srcDoc={previewDocument}
               title={title}
@@ -600,14 +552,12 @@ export function StudioShell({
                   setPreviewState("ready");
                   return;
                 }
-
                 setPreviewState("error");
                 pushRuntimeMessage(message);
               }}
             />
           </Panel>
 
-          {/* Code Editor & Console */}
           <div
             className={cn(
               "grid gap-4 lg:grid-cols-[1.2fr_0.8fr]",
@@ -623,7 +573,7 @@ export function StudioShell({
                       "rounded-lg border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] transition",
                       activeTab === tab
                         ? tabStyles[tab]
-                        : "border-white/10 bg-white/5 text-slate-400 hover:text-white",
+                        : "border-gray-200 bg-gray-50 text-gray-500 hover:text-gray-700",
                     )}
                     onClick={() => setActiveTab(tab)}
                     type="button"
@@ -640,7 +590,6 @@ export function StudioShell({
                     updateBundlePart("js", value);
                     return;
                   }
-
                   updateBundlePart(activeTab, value);
                 }}
               />
@@ -648,39 +597,37 @@ export function StudioShell({
 
             <Panel className="p-4">
               <div className="flex items-center justify-between">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.18em] text-gray-400">
                   Console
                 </p>
                 {runtimeMessages.length > 0 && (
-                  <Badge className="border-rose-300/20 bg-rose-500/10 text-rose-200">
+                  <Badge className="border-red-200 bg-red-50 text-red-700">
                     {runtimeMessages.length}
                   </Badge>
                 )}
               </div>
-
               <div className="mt-3 space-y-2">
                 {runtimeMessages.length > 0 ? (
                   runtimeMessages.slice(0, 3).map((message, index) => (
                     <div
                       key={index}
-                      className="rounded-lg border border-rose-300/20 bg-rose-500/5 p-3 text-xs"
+                      className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700"
                     >
-                      <p className="text-rose-200">{message.message}</p>
+                      {message.message}
                     </div>
                   ))
                 ) : (
-                  <p className="rounded-lg border border-dashed border-white/10 p-4 text-center text-xs text-slate-500">
+                  <p className="rounded-lg border border-dashed border-gray-200 p-4 text-center text-xs text-gray-400">
                     {hasGenerated ? "No errors" : "Generate to see output"}
                   </p>
                 )}
               </div>
-
               {howToPlay.length > 0 && (
-                <div className="mt-3 rounded-lg border border-cyan-300/14 bg-cyan-400/5 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-cyan-200">
+                <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-blue-600">
                     How to Play
                   </p>
-                  <ul className="mt-2 space-y-1 text-xs text-slate-300">
+                  <ul className="mt-2 space-y-1 text-xs text-gray-600">
                     {howToPlay.slice(0, 3).map((item, index) => (
                       <li key={index}>• {item}</li>
                     ))}

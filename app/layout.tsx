@@ -35,13 +35,10 @@ export default function RootLayout({
       lang="en"
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable} h-full`}
     >
-      <body className="min-h-full">
-        <div className="fixed inset-0 -z-10 bg-app-gradient" />
-        <div className="fixed inset-0 -z-10 bg-app-grid opacity-70" />
+      <body className="min-h-full bg-[#FAFBFC]">
         <SiteHeader />
         <main>{children}</main>
       </body>
     </html>
   );
 }
-

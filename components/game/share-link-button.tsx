@@ -5,21 +5,33 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-export function ShareLinkButton({ href }: { href: string }) {
+type ShareLinkButtonProps = {
+  href: string;
+};
+
+export function ShareLinkButton({ href }: ShareLinkButtonProps) {
   const [copied, setCopied] = useState(false);
+
+  function copyLink() {
+    navigator.clipboard.writeText(href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <Button
       variant="secondary"
-      leading={copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-      onClick={async () => {
-        await navigator.clipboard.writeText(href);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      }}
+      size="sm"
+      leading={
+        copied ? (
+          <Check className="size-3.5 text-green-600" />
+        ) : (
+          <Copy className="size-3.5" />
+        )
+      }
+      onClick={copyLink}
     >
-      {copied ? "Copied" : "Copy share link"}
+      {copied ? "Copied!" : "Copy link"}
     </Button>
   );
 }
-

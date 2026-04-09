@@ -1,63 +1,60 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { LogIn, LogOut, Sparkles } from "lucide-react";
 import { useState, useTransition } from "react";
 
-import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
 
 export function AuthStatus() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const session = authClient.useSession();
-  const [error, setError] = useState<string | null>(null);
-  const [isSigningOut, startSigningOut] = useTransition();
 
-  if (session.isPending) {
-    return (
-      <div className="h-11 w-40 animate-pulse rounded-full border border-white/10 bg-white/6" />
-    );
+  function handleSignOut() {
+    startTransition(async () => {
+      await authClient.signOut();
+      router.refresh();
+    });
   }
 
-  if (!session.data) {
+  if (session.data) {
     return (
       <div className="flex items-center gap-3">
-        <Button asChild variant="secondary" className="hidden md:inline-flex">
-          <Link href="/dashboard">Explore Studio</Link>
-        </Button>
-        <Button asChild variant="primary" leading={<Sparkles className="size-4" />}>
-          <Link href="/sign-in">Launch</Link>
+        <span className="hidden text-sm text-gray-500 sm:inline">
+          {session.data.user.name}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          leading={<LogOut className="size-4" />}
+          onClick={handleSignOut}
+          disabled={isPending}
+        >
+          Sign Out
         </Button>
       </div>
     );
   }
 
   return (
-      <div className="flex items-center gap-3">
-        <Button asChild variant="secondary" className="hidden md:inline-flex">
-          <Link href="/dashboard">{session.data.user.name.split(" ")[0]}&apos;s Deck</Link>
-        </Button>
-        <Button
-        variant="ghost"
-        leading={<LogOut className="size-4" />}
-        disabled={isSigningOut}
-        onClick={() => {
-          setError(null);
-          startSigningOut(async () => {
-            try {
-              await authClient.signOut();
-              router.refresh();
-              router.push("/");
-            } catch (nextError) {
-              setError(nextError instanceof Error ? nextError.message : "Sign out failed.");
-            }
-          });
-        }}
-      >
-        Exit
+    <div className="flex items-center gap-3">
+      <Button asChild variant="ghost" size="sm">
+        <Link href="/sign-in">
+          <LogIn className="size-4" />
+          Sign In
+        </Link>
       </Button>
-      {error ? <span className="text-xs text-rose-300">{error}</span> : null}
+      <Button
+        asChild
+        variant="primary"
+        size="sm"
+        leading={<Sparkles className="size-3.5" />}
+      >
+        <Link href="/studio/new">Launch</Link>
+      </Button>
     </div>
   );
 }

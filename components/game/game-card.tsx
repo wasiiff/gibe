@@ -3,8 +3,8 @@ import { Globe2, LockKeyhole, Play, Wand2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Panel } from "@/components/ui/panel";
 import { DeleteGameButton } from "@/components/game/delete-game-button";
+import { Panel } from "@/components/ui/panel";
 import { formatRelativeDate, truncate } from "@/lib/utils";
 
 type GameCardProps = {
@@ -30,52 +30,58 @@ export function GameCard({
   const isPublicView = mode === "public";
 
   return (
-    <Panel className="group flex h-full flex-col gap-5 overflow-hidden p-5 transition duration-200 hover:-translate-y-1 hover:border-cyan-300/20">
+    <Panel className="group flex h-full flex-col gap-4 overflow-hidden p-5 transition hover:border-gray-300">
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-3">
-          <Badge className={game.isPublic ? "text-cyan-200" : "text-slate-300"}>
+        <div className="space-y-2">
+          <Badge
+            className={
+              game.isPublic
+                ? "border-green-200 bg-green-50 text-green-700"
+                : "border-gray-200 bg-gray-50 text-gray-600"
+            }
+          >
             {game.isPublic ? (
-              <Globe2 className="size-3.5" />
+              <Globe2 className="size-3" />
             ) : (
-              <LockKeyhole className="size-3.5" />
+              <LockKeyhole className="size-3" />
             )}
             {game.isPublic ? "Public" : "Private"}
           </Badge>
           <div>
-            <h3 className="font-display text-xl uppercase tracking-[0.08em] text-white">
+            <h3 className="font-display text-base font-bold uppercase tracking-[0.06em] text-gray-900">
               {game.title}
             </h3>
-            <p className="mt-2 text-sm leading-7 text-slate-300">
-              {truncate(game.description, 140)}
+            <p className="mt-1.5 text-sm leading-6 text-gray-500">
+              {truncate(game.description, 120)}
             </p>
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/6 p-3">
-          <Wand2 className="size-5 text-cyan-200" />
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5">
+          <Wand2 className="size-4 text-gray-600" />
         </div>
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-4 text-xs uppercase tracking-[0.16em] text-slate-400">
+      <div className="mt-auto flex items-center justify-between gap-4 text-xs text-gray-400">
         <span>{formatRelativeDate(game.updatedAt)}</span>
         {creatorName ? <span>{creatorName}</span> : null}
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2">
         {isPublicView ? (
           <Button asChild variant="primary" className="w-full">
             <Link href={`/play/${game.slug}`}>
-              <Play className="size-4" />
-              Play now
+              <Play className="size-3.5" />
+              Play
             </Link>
           </Button>
         ) : (
           <>
             <Button asChild variant="primary" className="flex-1">
-              <Link href={`/studio/${game.id}`}>Open studio</Link>
+              <Link href={`/studio/${game.id}`}>Open</Link>
             </Button>
             {game.isPublic ? (
               <Button asChild variant="secondary" className="flex-1">
-                <Link href={`/play/${game.slug}`}>Open live</Link>
+                <Link href={`/play/${game.slug}`}>View</Link>
               </Button>
             ) : null}
             {onDelete && (
