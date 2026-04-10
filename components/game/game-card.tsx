@@ -13,6 +13,7 @@ type GameCardProps = {
     slug: string;
     title: string;
     description: string;
+    coverImage: string | null;
     isPublic: boolean;
     updatedAt: Date | string;
   };
@@ -31,6 +32,23 @@ export function GameCard({
 
   return (
     <Panel className="group flex h-full flex-col gap-4 overflow-hidden p-5 transition hover:border-gray-300">
+      {/* Cover Image */}
+      {game.coverImage ? (
+        <div className="-mx-5 -mt-5 mb-2 overflow-hidden rounded-t-2xl">
+          <img
+            src={game.coverImage}
+            alt={game.title}
+            className="h-32 w-full object-cover transition group-hover:scale-105"
+          />
+        </div>
+      ) : (
+        <div className="-mx-5 -mt-5 mb-2 h-32 rounded-t-2xl bg-gradient-to-br from-gray-700 via-gray-600 to-gray-500">
+          <div className="flex h-full items-center justify-center">
+            <Wand2 className="size-10 text-white/40" />
+          </div>
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <Badge

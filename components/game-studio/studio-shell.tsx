@@ -255,7 +255,7 @@ export function StudioShell({
     });
   }
 
-  async function saveGame(isPublic: boolean) {
+  async function saveGame(isPublic: boolean, generateCover = false) {
     setRequestError(null);
     setStatusLine(isPublic ? "Publishing..." : "Saving...");
     startSaveTransition(async () => {
@@ -283,6 +283,20 @@ export function StudioShell({
         setSlug(payload.game.slug);
         setHasPublished(payload.game.isPublic);
         setStatusLine(payload.game.isPublic ? "Published!" : "Saved.");
+
+        // Generate cover image if publishing and requested
+        if (isPublic && generateCover && !payload.game.isPublic) {
+          try {
+            setStatusLine("Generating cover image...");
+            await fetch(`/api/games/${payload.game.id}/generate-cover`, {
+              method: "POST",
+            });
+          } catch (err) {
+            // Non-critical, continue if it fails
+            console.error("Cover image generation failed:", err);
+          }
+        }
+
         router.replace(`/studio/${payload.game.id}`);
         router.refresh();
       } catch (error) {
@@ -537,7 +551,7 @@ export function StudioShell({
                     )
                   }
                   disabled={isSaving}
-                  onClick={() => saveGame(true)}
+                  onClick={() => saveGame(true, true)}
                 >
                   {hasPublished ? "Update" : "Publish"}
                 </Button>

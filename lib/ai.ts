@@ -592,3 +592,63 @@ Return the COMPLETE fixed code with the error resolved.`,
 
   return normalizeRepairResult(repairedGame, current);
 }
+
+function getImageModel() {
+  return serverEnv.aiImageModel;
+}
+
+export async function generateGameCoverImage(prompt: string) {
+  ensureAiConfigured();
+
+  const enhancedPrompt = `Create a vibrant, eye-catching game cover/thumbnail image for a browser game. The image should be in a modern, polished style with neon colors and dynamic composition. Game: "${prompt}". Make it look professional and appealing to players.`;
+
+  const apiKey = serverEnv.aiGatewayApiKey;
+  const model = getImageModel();
+
+  const response = await fetch(
+    "https://gateway.ai.cloudflare.com/v1/openai/images/generations",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        prompt: enhancedPrompt,
+        n: 1,
+        size: "512x512",
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to generate cover image: ${response.statusText}`);
+  }
+
+  const data = (await response.json()) as {
+    data?: Array<{
+      b64_json?: string;
+      url?: string;
+    }>;
+  };
+
+  if (!data.data?.[0]) {
+    throw new Error("No image data returned from AI model");
+  }
+
+  const imageData = data.data[0];
+
+  if (imageData.b64_json) {
+    return `data:image/png;base64,${imageData.b64_json}`;
+  }
+
+  if (imageData.url) {
+    const urlResponse = await fetch(imageData.url);
+    const buffer = await urlResponse.arrayBuffer();
+    const base64 = Buffer.from(buffer).toString("base64");
+    return `data:image/png;base64,${base64}`;
+  }
+
+  throw new Error("No image data in response");
+}

@@ -81,14 +81,15 @@ model Game {
   htmlCode      String        @db.Text
   cssCode       String        @db.Text
   jsCode        String        @db.Text
+  coverImage    String?
   isPublic      Boolean       @default(false)
   publishedAt   DateTime?
   totalPlays    Int           @default(0)
-  highScores    Json?         @default("[]")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   versions      GameVersion[]
+  scores        Score[]
 
   @@index([userId, updatedAt(sort: Desc)])
   @@index([isPublic, publishedAt(sort: Desc)])
@@ -108,4 +109,18 @@ model GameVersion {
 
   @@index([gameId, createdAt(sort: Desc)])
   @@map("game_version")
+}
+
+model Score {
+  id         String   @id @default(cuid())
+  gameId     String
+  playerName String
+  score      Int
+  metadata   Json?    @default("{}")
+  createdAt  DateTime @default(now())
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId, score(sort: Desc)])
+  @@index([gameId, createdAt(sort: Desc)])
+  @@map("score")
 }

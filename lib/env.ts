@@ -7,6 +7,7 @@ type ServerEnv = {
   GOOGLE_CLIENT_SECRET?: string;
   AI_GATEWAY_API_KEY?: string;
   AI_GAME_MODEL?: string;
+  AI_IMAGE_MODEL?: string;
   DATABASE_URL?: string;
 };
 
@@ -15,6 +16,7 @@ const env = process.env as ServerEnv;
 export const serverEnv = {
   aiGatewayApiKey: env.AI_GATEWAY_API_KEY,
   aiGameModel: env.AI_GAME_MODEL ?? "meituan/longcat-flash-chat",
+  aiImageModel: env.AI_IMAGE_MODEL ?? "black-forest-labs/bfl-flux.1-schnell",
   authSecret: env.BETTER_AUTH_SECRET,
   authUrl: env.BETTER_AUTH_URL,
   databaseUrl: env.DATABASE_URL,

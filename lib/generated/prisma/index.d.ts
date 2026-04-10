@@ -43,6 +43,11 @@ export type Game = $Result.DefaultSelection<Prisma.$GamePayload>
  * 
  */
 export type GameVersion = $Result.DefaultSelection<Prisma.$GameVersionPayload>
+/**
+ * Model Score
+ * 
+ */
+export type Score = $Result.DefaultSelection<Prisma.$ScorePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -224,6 +229,16 @@ export class PrismaClient<
     * ```
     */
   get gameVersion(): Prisma.GameVersionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.score`: Exposes CRUD operations for the **Score** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Scores
+    * const scores = await prisma.score.findMany()
+    * ```
+    */
+  get score(): Prisma.ScoreDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -663,7 +678,8 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     Game: 'Game',
-    GameVersion: 'GameVersion'
+    GameVersion: 'GameVersion',
+    Score: 'Score'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -679,7 +695,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "game" | "gameVersion"
+      modelProps: "user" | "session" | "account" | "verification" | "game" | "gameVersion" | "score"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1127,6 +1143,80 @@ export namespace Prisma {
           }
         }
       }
+      Score: {
+        payload: Prisma.$ScorePayload<ExtArgs>
+        fields: Prisma.ScoreFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScoreFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScoreFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          findFirst: {
+            args: Prisma.ScoreFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScoreFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          findMany: {
+            args: Prisma.ScoreFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>[]
+          }
+          create: {
+            args: Prisma.ScoreCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          createMany: {
+            args: Prisma.ScoreCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScoreCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>[]
+          }
+          delete: {
+            args: Prisma.ScoreDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          update: {
+            args: Prisma.ScoreUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          deleteMany: {
+            args: Prisma.ScoreDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScoreUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScoreUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>[]
+          }
+          upsert: {
+            args: Prisma.ScoreUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScorePayload>
+          }
+          aggregate: {
+            args: Prisma.ScoreAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScore>
+          }
+          groupBy: {
+            args: Prisma.ScoreGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScoreGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScoreCountArgs<ExtArgs>
+            result: $Utils.Optional<ScoreCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1241,6 +1331,7 @@ export namespace Prisma {
     verification?: VerificationOmit
     game?: GameOmit
     gameVersion?: GameVersionOmit
+    score?: ScoreOmit
   }
 
   /* Types for Logging */
@@ -1371,10 +1462,12 @@ export namespace Prisma {
 
   export type GameCountOutputType = {
     versions: number
+    scores: number
   }
 
   export type GameCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     versions?: boolean | GameCountOutputTypeCountVersionsArgs
+    scores?: boolean | GameCountOutputTypeCountScoresArgs
   }
 
   // Custom InputTypes
@@ -1393,6 +1486,13 @@ export namespace Prisma {
    */
   export type GameCountOutputTypeCountVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameVersionWhereInput
+  }
+
+  /**
+   * GameCountOutputType without action
+   */
+  export type GameCountOutputTypeCountScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScoreWhereInput
   }
 
 
@@ -5870,6 +5970,7 @@ export namespace Prisma {
     htmlCode: string | null
     cssCode: string | null
     jsCode: string | null
+    coverImage: string | null
     isPublic: boolean | null
     publishedAt: Date | null
     totalPlays: number | null
@@ -5888,6 +5989,7 @@ export namespace Prisma {
     htmlCode: string | null
     cssCode: string | null
     jsCode: string | null
+    coverImage: string | null
     isPublic: boolean | null
     publishedAt: Date | null
     totalPlays: number | null
@@ -5906,10 +6008,10 @@ export namespace Prisma {
     htmlCode: number
     cssCode: number
     jsCode: number
+    coverImage: number
     isPublic: number
     publishedAt: number
     totalPlays: number
-    highScores: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -5935,6 +6037,7 @@ export namespace Prisma {
     htmlCode?: true
     cssCode?: true
     jsCode?: true
+    coverImage?: true
     isPublic?: true
     publishedAt?: true
     totalPlays?: true
@@ -5953,6 +6056,7 @@ export namespace Prisma {
     htmlCode?: true
     cssCode?: true
     jsCode?: true
+    coverImage?: true
     isPublic?: true
     publishedAt?: true
     totalPlays?: true
@@ -5971,10 +6075,10 @@ export namespace Prisma {
     htmlCode?: true
     cssCode?: true
     jsCode?: true
+    coverImage?: true
     isPublic?: true
     publishedAt?: true
     totalPlays?: true
-    highScores?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6077,10 +6181,10 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage: string | null
     isPublic: boolean
     publishedAt: Date | null
     totalPlays: number
-    highScores: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: GameCountAggregateOutputType | null
@@ -6115,14 +6219,15 @@ export namespace Prisma {
     htmlCode?: boolean
     cssCode?: boolean
     jsCode?: boolean
+    coverImage?: boolean
     isPublic?: boolean
     publishedAt?: boolean
     totalPlays?: boolean
-    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     versions?: boolean | Game$versionsArgs<ExtArgs>
+    scores?: boolean | Game$scoresArgs<ExtArgs>
     _count?: boolean | GameCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["game"]>
 
@@ -6137,10 +6242,10 @@ export namespace Prisma {
     htmlCode?: boolean
     cssCode?: boolean
     jsCode?: boolean
+    coverImage?: boolean
     isPublic?: boolean
     publishedAt?: boolean
     totalPlays?: boolean
-    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6157,10 +6262,10 @@ export namespace Prisma {
     htmlCode?: boolean
     cssCode?: boolean
     jsCode?: boolean
+    coverImage?: boolean
     isPublic?: boolean
     publishedAt?: boolean
     totalPlays?: boolean
-    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6177,18 +6282,19 @@ export namespace Prisma {
     htmlCode?: boolean
     cssCode?: boolean
     jsCode?: boolean
+    coverImage?: boolean
     isPublic?: boolean
     publishedAt?: boolean
     totalPlays?: boolean
-    highScores?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "description" | "prompt" | "refinedPrompt" | "htmlCode" | "cssCode" | "jsCode" | "isPublic" | "publishedAt" | "totalPlays" | "highScores" | "createdAt" | "updatedAt", ExtArgs["result"]["game"]>
+  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "description" | "prompt" | "refinedPrompt" | "htmlCode" | "cssCode" | "jsCode" | "coverImage" | "isPublic" | "publishedAt" | "totalPlays" | "createdAt" | "updatedAt", ExtArgs["result"]["game"]>
   export type GameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     versions?: boolean | Game$versionsArgs<ExtArgs>
+    scores?: boolean | Game$scoresArgs<ExtArgs>
     _count?: boolean | GameCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GameIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6203,6 +6309,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       versions: Prisma.$GameVersionPayload<ExtArgs>[]
+      scores: Prisma.$ScorePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6215,10 +6322,10 @@ export namespace Prisma {
       htmlCode: string
       cssCode: string
       jsCode: string
+      coverImage: string | null
       isPublic: boolean
       publishedAt: Date | null
       totalPlays: number
-      highScores: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["game"]>
@@ -6617,6 +6724,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     versions<T extends Game$versionsArgs<ExtArgs> = {}>(args?: Subset<T, Game$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scores<T extends Game$scoresArgs<ExtArgs> = {}>(args?: Subset<T, Game$scoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6656,10 +6764,10 @@ export namespace Prisma {
     readonly htmlCode: FieldRef<"Game", 'String'>
     readonly cssCode: FieldRef<"Game", 'String'>
     readonly jsCode: FieldRef<"Game", 'String'>
+    readonly coverImage: FieldRef<"Game", 'String'>
     readonly isPublic: FieldRef<"Game", 'Boolean'>
     readonly publishedAt: FieldRef<"Game", 'DateTime'>
     readonly totalPlays: FieldRef<"Game", 'Int'>
-    readonly highScores: FieldRef<"Game", 'Json'>
     readonly createdAt: FieldRef<"Game", 'DateTime'>
     readonly updatedAt: FieldRef<"Game", 'DateTime'>
   }
@@ -7084,6 +7192,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GameVersionScalarFieldEnum | GameVersionScalarFieldEnum[]
+  }
+
+  /**
+   * Game.scores
+   */
+  export type Game$scoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    where?: ScoreWhereInput
+    orderBy?: ScoreOrderByWithRelationInput | ScoreOrderByWithRelationInput[]
+    cursor?: ScoreWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScoreScalarFieldEnum | ScoreScalarFieldEnum[]
   }
 
   /**
@@ -8208,6 +8340,1112 @@ export namespace Prisma {
 
 
   /**
+   * Model Score
+   */
+
+  export type AggregateScore = {
+    _count: ScoreCountAggregateOutputType | null
+    _avg: ScoreAvgAggregateOutputType | null
+    _sum: ScoreSumAggregateOutputType | null
+    _min: ScoreMinAggregateOutputType | null
+    _max: ScoreMaxAggregateOutputType | null
+  }
+
+  export type ScoreAvgAggregateOutputType = {
+    score: number | null
+  }
+
+  export type ScoreSumAggregateOutputType = {
+    score: number | null
+  }
+
+  export type ScoreMinAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    playerName: string | null
+    score: number | null
+    createdAt: Date | null
+  }
+
+  export type ScoreMaxAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    playerName: string | null
+    score: number | null
+    createdAt: Date | null
+  }
+
+  export type ScoreCountAggregateOutputType = {
+    id: number
+    gameId: number
+    playerName: number
+    score: number
+    metadata: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ScoreAvgAggregateInputType = {
+    score?: true
+  }
+
+  export type ScoreSumAggregateInputType = {
+    score?: true
+  }
+
+  export type ScoreMinAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerName?: true
+    score?: true
+    createdAt?: true
+  }
+
+  export type ScoreMaxAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerName?: true
+    score?: true
+    createdAt?: true
+  }
+
+  export type ScoreCountAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerName?: true
+    score?: true
+    metadata?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ScoreAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Score to aggregate.
+     */
+    where?: ScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scores to fetch.
+     */
+    orderBy?: ScoreOrderByWithRelationInput | ScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Scores
+    **/
+    _count?: true | ScoreCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ScoreAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ScoreSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScoreMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScoreMaxAggregateInputType
+  }
+
+  export type GetScoreAggregateType<T extends ScoreAggregateArgs> = {
+        [P in keyof T & keyof AggregateScore]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScore[P]>
+      : GetScalarType<T[P], AggregateScore[P]>
+  }
+
+
+
+
+  export type ScoreGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScoreWhereInput
+    orderBy?: ScoreOrderByWithAggregationInput | ScoreOrderByWithAggregationInput[]
+    by: ScoreScalarFieldEnum[] | ScoreScalarFieldEnum
+    having?: ScoreScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScoreCountAggregateInputType | true
+    _avg?: ScoreAvgAggregateInputType
+    _sum?: ScoreSumAggregateInputType
+    _min?: ScoreMinAggregateInputType
+    _max?: ScoreMaxAggregateInputType
+  }
+
+  export type ScoreGroupByOutputType = {
+    id: string
+    gameId: string
+    playerName: string
+    score: number
+    metadata: JsonValue | null
+    createdAt: Date
+    _count: ScoreCountAggregateOutputType | null
+    _avg: ScoreAvgAggregateOutputType | null
+    _sum: ScoreSumAggregateOutputType | null
+    _min: ScoreMinAggregateOutputType | null
+    _max: ScoreMaxAggregateOutputType | null
+  }
+
+  type GetScoreGroupByPayload<T extends ScoreGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScoreGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScoreGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScoreGroupByOutputType[P]>
+            : GetScalarType<T[P], ScoreGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScoreSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    playerName?: boolean
+    score?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["score"]>
+
+  export type ScoreSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    playerName?: boolean
+    score?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["score"]>
+
+  export type ScoreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    playerName?: boolean
+    score?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["score"]>
+
+  export type ScoreSelectScalar = {
+    id?: boolean
+    gameId?: boolean
+    playerName?: boolean
+    score?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }
+
+  export type ScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "playerName" | "score" | "metadata" | "createdAt", ExtArgs["result"]["score"]>
+  export type ScoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+  export type ScoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+  export type ScoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | GameDefaultArgs<ExtArgs>
+  }
+
+  export type $ScorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Score"
+    objects: {
+      game: Prisma.$GamePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      gameId: string
+      playerName: string
+      score: number
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["score"]>
+    composites: {}
+  }
+
+  type ScoreGetPayload<S extends boolean | null | undefined | ScoreDefaultArgs> = $Result.GetResult<Prisma.$ScorePayload, S>
+
+  type ScoreCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScoreFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScoreCountAggregateInputType | true
+    }
+
+  export interface ScoreDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Score'], meta: { name: 'Score' } }
+    /**
+     * Find zero or one Score that matches the filter.
+     * @param {ScoreFindUniqueArgs} args - Arguments to find a Score
+     * @example
+     * // Get one Score
+     * const score = await prisma.score.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScoreFindUniqueArgs>(args: SelectSubset<T, ScoreFindUniqueArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Score that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScoreFindUniqueOrThrowArgs} args - Arguments to find a Score
+     * @example
+     * // Get one Score
+     * const score = await prisma.score.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScoreFindUniqueOrThrowArgs>(args: SelectSubset<T, ScoreFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Score that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreFindFirstArgs} args - Arguments to find a Score
+     * @example
+     * // Get one Score
+     * const score = await prisma.score.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScoreFindFirstArgs>(args?: SelectSubset<T, ScoreFindFirstArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Score that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreFindFirstOrThrowArgs} args - Arguments to find a Score
+     * @example
+     * // Get one Score
+     * const score = await prisma.score.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScoreFindFirstOrThrowArgs>(args?: SelectSubset<T, ScoreFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Scores that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Scores
+     * const scores = await prisma.score.findMany()
+     * 
+     * // Get first 10 Scores
+     * const scores = await prisma.score.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scoreWithIdOnly = await prisma.score.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScoreFindManyArgs>(args?: SelectSubset<T, ScoreFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Score.
+     * @param {ScoreCreateArgs} args - Arguments to create a Score.
+     * @example
+     * // Create one Score
+     * const Score = await prisma.score.create({
+     *   data: {
+     *     // ... data to create a Score
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScoreCreateArgs>(args: SelectSubset<T, ScoreCreateArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Scores.
+     * @param {ScoreCreateManyArgs} args - Arguments to create many Scores.
+     * @example
+     * // Create many Scores
+     * const score = await prisma.score.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScoreCreateManyArgs>(args?: SelectSubset<T, ScoreCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Scores and returns the data saved in the database.
+     * @param {ScoreCreateManyAndReturnArgs} args - Arguments to create many Scores.
+     * @example
+     * // Create many Scores
+     * const score = await prisma.score.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Scores and only return the `id`
+     * const scoreWithIdOnly = await prisma.score.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScoreCreateManyAndReturnArgs>(args?: SelectSubset<T, ScoreCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Score.
+     * @param {ScoreDeleteArgs} args - Arguments to delete one Score.
+     * @example
+     * // Delete one Score
+     * const Score = await prisma.score.delete({
+     *   where: {
+     *     // ... filter to delete one Score
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScoreDeleteArgs>(args: SelectSubset<T, ScoreDeleteArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Score.
+     * @param {ScoreUpdateArgs} args - Arguments to update one Score.
+     * @example
+     * // Update one Score
+     * const score = await prisma.score.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScoreUpdateArgs>(args: SelectSubset<T, ScoreUpdateArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Scores.
+     * @param {ScoreDeleteManyArgs} args - Arguments to filter Scores to delete.
+     * @example
+     * // Delete a few Scores
+     * const { count } = await prisma.score.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScoreDeleteManyArgs>(args?: SelectSubset<T, ScoreDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Scores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Scores
+     * const score = await prisma.score.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScoreUpdateManyArgs>(args: SelectSubset<T, ScoreUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Scores and returns the data updated in the database.
+     * @param {ScoreUpdateManyAndReturnArgs} args - Arguments to update many Scores.
+     * @example
+     * // Update many Scores
+     * const score = await prisma.score.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Scores and only return the `id`
+     * const scoreWithIdOnly = await prisma.score.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScoreUpdateManyAndReturnArgs>(args: SelectSubset<T, ScoreUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Score.
+     * @param {ScoreUpsertArgs} args - Arguments to update or create a Score.
+     * @example
+     * // Update or create a Score
+     * const score = await prisma.score.upsert({
+     *   create: {
+     *     // ... data to create a Score
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Score we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScoreUpsertArgs>(args: SelectSubset<T, ScoreUpsertArgs<ExtArgs>>): Prisma__ScoreClient<$Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Scores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreCountArgs} args - Arguments to filter Scores to count.
+     * @example
+     * // Count the number of Scores
+     * const count = await prisma.score.count({
+     *   where: {
+     *     // ... the filter for the Scores we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScoreCountArgs>(
+      args?: Subset<T, ScoreCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScoreCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Score.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScoreAggregateArgs>(args: Subset<T, ScoreAggregateArgs>): Prisma.PrismaPromise<GetScoreAggregateType<T>>
+
+    /**
+     * Group by Score.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScoreGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScoreGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScoreGroupByArgs['orderBy'] }
+        : { orderBy?: ScoreGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScoreGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScoreGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Score model
+   */
+  readonly fields: ScoreFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Score.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScoreClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    game<T extends GameDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GameDefaultArgs<ExtArgs>>): Prisma__GameClient<$Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Score model
+   */
+  interface ScoreFieldRefs {
+    readonly id: FieldRef<"Score", 'String'>
+    readonly gameId: FieldRef<"Score", 'String'>
+    readonly playerName: FieldRef<"Score", 'String'>
+    readonly score: FieldRef<"Score", 'Int'>
+    readonly metadata: FieldRef<"Score", 'Json'>
+    readonly createdAt: FieldRef<"Score", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Score findUnique
+   */
+  export type ScoreFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which Score to fetch.
+     */
+    where: ScoreWhereUniqueInput
+  }
+
+  /**
+   * Score findUniqueOrThrow
+   */
+  export type ScoreFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which Score to fetch.
+     */
+    where: ScoreWhereUniqueInput
+  }
+
+  /**
+   * Score findFirst
+   */
+  export type ScoreFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which Score to fetch.
+     */
+    where?: ScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scores to fetch.
+     */
+    orderBy?: ScoreOrderByWithRelationInput | ScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Scores.
+     */
+    cursor?: ScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Scores.
+     */
+    distinct?: ScoreScalarFieldEnum | ScoreScalarFieldEnum[]
+  }
+
+  /**
+   * Score findFirstOrThrow
+   */
+  export type ScoreFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which Score to fetch.
+     */
+    where?: ScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scores to fetch.
+     */
+    orderBy?: ScoreOrderByWithRelationInput | ScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Scores.
+     */
+    cursor?: ScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Scores.
+     */
+    distinct?: ScoreScalarFieldEnum | ScoreScalarFieldEnum[]
+  }
+
+  /**
+   * Score findMany
+   */
+  export type ScoreFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which Scores to fetch.
+     */
+    where?: ScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scores to fetch.
+     */
+    orderBy?: ScoreOrderByWithRelationInput | ScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Scores.
+     */
+    cursor?: ScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Scores.
+     */
+    distinct?: ScoreScalarFieldEnum | ScoreScalarFieldEnum[]
+  }
+
+  /**
+   * Score create
+   */
+  export type ScoreCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Score.
+     */
+    data: XOR<ScoreCreateInput, ScoreUncheckedCreateInput>
+  }
+
+  /**
+   * Score createMany
+   */
+  export type ScoreCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Scores.
+     */
+    data: ScoreCreateManyInput | ScoreCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Score createManyAndReturn
+   */
+  export type ScoreCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * The data used to create many Scores.
+     */
+    data: ScoreCreateManyInput | ScoreCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Score update
+   */
+  export type ScoreUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Score.
+     */
+    data: XOR<ScoreUpdateInput, ScoreUncheckedUpdateInput>
+    /**
+     * Choose, which Score to update.
+     */
+    where: ScoreWhereUniqueInput
+  }
+
+  /**
+   * Score updateMany
+   */
+  export type ScoreUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Scores.
+     */
+    data: XOR<ScoreUpdateManyMutationInput, ScoreUncheckedUpdateManyInput>
+    /**
+     * Filter which Scores to update
+     */
+    where?: ScoreWhereInput
+    /**
+     * Limit how many Scores to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Score updateManyAndReturn
+   */
+  export type ScoreUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * The data used to update Scores.
+     */
+    data: XOR<ScoreUpdateManyMutationInput, ScoreUncheckedUpdateManyInput>
+    /**
+     * Filter which Scores to update
+     */
+    where?: ScoreWhereInput
+    /**
+     * Limit how many Scores to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Score upsert
+   */
+  export type ScoreUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Score to update in case it exists.
+     */
+    where: ScoreWhereUniqueInput
+    /**
+     * In case the Score found by the `where` argument doesn't exist, create a new Score with this data.
+     */
+    create: XOR<ScoreCreateInput, ScoreUncheckedCreateInput>
+    /**
+     * In case the Score was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScoreUpdateInput, ScoreUncheckedUpdateInput>
+  }
+
+  /**
+   * Score delete
+   */
+  export type ScoreDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+    /**
+     * Filter which Score to delete.
+     */
+    where: ScoreWhereUniqueInput
+  }
+
+  /**
+   * Score deleteMany
+   */
+  export type ScoreDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Scores to delete
+     */
+    where?: ScoreWhereInput
+    /**
+     * Limit how many Scores to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Score without action
+   */
+  export type ScoreDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Score
+     */
+    select?: ScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Score
+     */
+    omit?: ScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScoreInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8290,10 +9528,10 @@ export namespace Prisma {
     htmlCode: 'htmlCode',
     cssCode: 'cssCode',
     jsCode: 'jsCode',
+    coverImage: 'coverImage',
     isPublic: 'isPublic',
     publishedAt: 'publishedAt',
     totalPlays: 'totalPlays',
-    highScores: 'highScores',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8313,6 +9551,18 @@ export namespace Prisma {
   };
 
   export type GameVersionScalarFieldEnum = (typeof GameVersionScalarFieldEnum)[keyof typeof GameVersionScalarFieldEnum]
+
+
+  export const ScoreScalarFieldEnum: {
+    id: 'id',
+    gameId: 'gameId',
+    playerName: 'playerName',
+    score: 'score',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+  };
+
+  export type ScoreScalarFieldEnum = (typeof ScoreScalarFieldEnum)[keyof typeof ScoreScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8749,14 +9999,15 @@ export namespace Prisma {
     htmlCode?: StringFilter<"Game"> | string
     cssCode?: StringFilter<"Game"> | string
     jsCode?: StringFilter<"Game"> | string
+    coverImage?: StringNullableFilter<"Game"> | string | null
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
     totalPlays?: IntFilter<"Game"> | number
-    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     versions?: GameVersionListRelationFilter
+    scores?: ScoreListRelationFilter
   }
 
   export type GameOrderByWithRelationInput = {
@@ -8770,14 +10021,15 @@ export namespace Prisma {
     htmlCode?: SortOrder
     cssCode?: SortOrder
     jsCode?: SortOrder
+    coverImage?: SortOrderInput | SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrderInput | SortOrder
     totalPlays?: SortOrder
-    highScores?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     versions?: GameVersionOrderByRelationAggregateInput
+    scores?: ScoreOrderByRelationAggregateInput
   }
 
   export type GameWhereUniqueInput = Prisma.AtLeast<{
@@ -8794,14 +10046,15 @@ export namespace Prisma {
     htmlCode?: StringFilter<"Game"> | string
     cssCode?: StringFilter<"Game"> | string
     jsCode?: StringFilter<"Game"> | string
+    coverImage?: StringNullableFilter<"Game"> | string | null
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
     totalPlays?: IntFilter<"Game"> | number
-    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     versions?: GameVersionListRelationFilter
+    scores?: ScoreListRelationFilter
   }, "id" | "slug">
 
   export type GameOrderByWithAggregationInput = {
@@ -8815,10 +10068,10 @@ export namespace Prisma {
     htmlCode?: SortOrder
     cssCode?: SortOrder
     jsCode?: SortOrder
+    coverImage?: SortOrderInput | SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrderInput | SortOrder
     totalPlays?: SortOrder
-    highScores?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: GameCountOrderByAggregateInput
@@ -8842,10 +10095,10 @@ export namespace Prisma {
     htmlCode?: StringWithAggregatesFilter<"Game"> | string
     cssCode?: StringWithAggregatesFilter<"Game"> | string
     jsCode?: StringWithAggregatesFilter<"Game"> | string
+    coverImage?: StringNullableWithAggregatesFilter<"Game"> | string | null
     isPublic?: BoolWithAggregatesFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableWithAggregatesFilter<"Game"> | Date | string | null
     totalPlays?: IntWithAggregatesFilter<"Game"> | number
-    highScores?: JsonNullableWithAggregatesFilter<"Game">
     createdAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
   }
@@ -8918,6 +10171,68 @@ export namespace Prisma {
     cssCode?: StringWithAggregatesFilter<"GameVersion"> | string
     jsCode?: StringWithAggregatesFilter<"GameVersion"> | string
     createdAt?: DateTimeWithAggregatesFilter<"GameVersion"> | Date | string
+  }
+
+  export type ScoreWhereInput = {
+    AND?: ScoreWhereInput | ScoreWhereInput[]
+    OR?: ScoreWhereInput[]
+    NOT?: ScoreWhereInput | ScoreWhereInput[]
+    id?: StringFilter<"Score"> | string
+    gameId?: StringFilter<"Score"> | string
+    playerName?: StringFilter<"Score"> | string
+    score?: IntFilter<"Score"> | number
+    metadata?: JsonNullableFilter<"Score">
+    createdAt?: DateTimeFilter<"Score"> | Date | string
+    game?: XOR<GameScalarRelationFilter, GameWhereInput>
+  }
+
+  export type ScoreOrderByWithRelationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerName?: SortOrder
+    score?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    game?: GameOrderByWithRelationInput
+  }
+
+  export type ScoreWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ScoreWhereInput | ScoreWhereInput[]
+    OR?: ScoreWhereInput[]
+    NOT?: ScoreWhereInput | ScoreWhereInput[]
+    gameId?: StringFilter<"Score"> | string
+    playerName?: StringFilter<"Score"> | string
+    score?: IntFilter<"Score"> | number
+    metadata?: JsonNullableFilter<"Score">
+    createdAt?: DateTimeFilter<"Score"> | Date | string
+    game?: XOR<GameScalarRelationFilter, GameWhereInput>
+  }, "id">
+
+  export type ScoreOrderByWithAggregationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerName?: SortOrder
+    score?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ScoreCountOrderByAggregateInput
+    _avg?: ScoreAvgOrderByAggregateInput
+    _max?: ScoreMaxOrderByAggregateInput
+    _min?: ScoreMinOrderByAggregateInput
+    _sum?: ScoreSumOrderByAggregateInput
+  }
+
+  export type ScoreScalarWhereWithAggregatesInput = {
+    AND?: ScoreScalarWhereWithAggregatesInput | ScoreScalarWhereWithAggregatesInput[]
+    OR?: ScoreScalarWhereWithAggregatesInput[]
+    NOT?: ScoreScalarWhereWithAggregatesInput | ScoreScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Score"> | string
+    gameId?: StringWithAggregatesFilter<"Score"> | string
+    playerName?: StringWithAggregatesFilter<"Score"> | string
+    score?: IntWithAggregatesFilter<"Score"> | number
+    metadata?: JsonNullableWithAggregatesFilter<"Score">
+    createdAt?: DateTimeWithAggregatesFilter<"Score"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -9262,14 +10577,15 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGamesInput
     versions?: GameVersionCreateNestedManyWithoutGameInput
+    scores?: ScoreCreateNestedManyWithoutGameInput
   }
 
   export type GameUncheckedCreateInput = {
@@ -9283,13 +10599,14 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
+    scores?: ScoreUncheckedCreateNestedManyWithoutGameInput
   }
 
   export type GameUpdateInput = {
@@ -9302,14 +10619,15 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGamesNestedInput
     versions?: GameVersionUpdateManyWithoutGameNestedInput
+    scores?: ScoreUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateInput = {
@@ -9323,13 +10641,14 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
+    scores?: ScoreUncheckedUpdateManyWithoutGameNestedInput
   }
 
   export type GameCreateManyInput = {
@@ -9343,10 +10662,10 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9361,10 +10680,10 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9380,10 +10699,10 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9461,6 +10780,68 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreCreateInput = {
+    id?: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    game: GameCreateNestedOneWithoutScoresInput
+  }
+
+  export type ScoreUncheckedCreateInput = {
+    id?: string
+    gameId: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type ScoreUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    game?: GameUpdateOneRequiredWithoutScoresNestedInput
+  }
+
+  export type ScoreUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreCreateManyInput = {
+    id?: string
+    gameId: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type ScoreUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9786,29 +11167,6 @@ export namespace Prisma {
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type GameVersionListRelationFilter = {
     every?: GameVersionWhereInput
@@ -9816,7 +11174,17 @@ export namespace Prisma {
     none?: GameVersionWhereInput
   }
 
+  export type ScoreListRelationFilter = {
+    every?: ScoreWhereInput
+    some?: ScoreWhereInput
+    none?: ScoreWhereInput
+  }
+
   export type GameVersionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ScoreOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9831,10 +11199,10 @@ export namespace Prisma {
     htmlCode?: SortOrder
     cssCode?: SortOrder
     jsCode?: SortOrder
+    coverImage?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
     totalPlays?: SortOrder
-    highScores?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -9854,6 +11222,7 @@ export namespace Prisma {
     htmlCode?: SortOrder
     cssCode?: SortOrder
     jsCode?: SortOrder
+    coverImage?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
     totalPlays?: SortOrder
@@ -9872,6 +11241,7 @@ export namespace Prisma {
     htmlCode?: SortOrder
     cssCode?: SortOrder
     jsCode?: SortOrder
+    coverImage?: SortOrder
     isPublic?: SortOrder
     publishedAt?: SortOrder
     totalPlays?: SortOrder
@@ -9897,32 +11267,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type GameScalarRelationFilter = {
@@ -9961,6 +11305,88 @@ export namespace Prisma {
     cssCode?: SortOrder
     jsCode?: SortOrder
     createdAt?: SortOrder
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type ScoreCountOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerName?: SortOrder
+    score?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ScoreAvgOrderByAggregateInput = {
+    score?: SortOrder
+  }
+
+  export type ScoreMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerName?: SortOrder
+    score?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ScoreMinOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerName?: SortOrder
+    score?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ScoreSumOrderByAggregateInput = {
+    score?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -10150,11 +11576,25 @@ export namespace Prisma {
     connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
   }
 
+  export type ScoreCreateNestedManyWithoutGameInput = {
+    create?: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput> | ScoreCreateWithoutGameInput[] | ScoreUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: ScoreCreateOrConnectWithoutGameInput | ScoreCreateOrConnectWithoutGameInput[]
+    createMany?: ScoreCreateManyGameInputEnvelope
+    connect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+  }
+
   export type GameVersionUncheckedCreateNestedManyWithoutGameInput = {
     create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
     connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
     createMany?: GameVersionCreateManyGameInputEnvelope
     connect?: GameVersionWhereUniqueInput | GameVersionWhereUniqueInput[]
+  }
+
+  export type ScoreUncheckedCreateNestedManyWithoutGameInput = {
+    create?: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput> | ScoreCreateWithoutGameInput[] | ScoreUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: ScoreCreateOrConnectWithoutGameInput | ScoreCreateOrConnectWithoutGameInput[]
+    createMany?: ScoreCreateManyGameInputEnvelope
+    connect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -10187,6 +11627,20 @@ export namespace Prisma {
     deleteMany?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
   }
 
+  export type ScoreUpdateManyWithoutGameNestedInput = {
+    create?: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput> | ScoreCreateWithoutGameInput[] | ScoreUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: ScoreCreateOrConnectWithoutGameInput | ScoreCreateOrConnectWithoutGameInput[]
+    upsert?: ScoreUpsertWithWhereUniqueWithoutGameInput | ScoreUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: ScoreCreateManyGameInputEnvelope
+    set?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    disconnect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    delete?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    connect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    update?: ScoreUpdateWithWhereUniqueWithoutGameInput | ScoreUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: ScoreUpdateManyWithWhereWithoutGameInput | ScoreUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: ScoreScalarWhereInput | ScoreScalarWhereInput[]
+  }
+
   export type GameVersionUncheckedUpdateManyWithoutGameNestedInput = {
     create?: XOR<GameVersionCreateWithoutGameInput, GameVersionUncheckedCreateWithoutGameInput> | GameVersionCreateWithoutGameInput[] | GameVersionUncheckedCreateWithoutGameInput[]
     connectOrCreate?: GameVersionCreateOrConnectWithoutGameInput | GameVersionCreateOrConnectWithoutGameInput[]
@@ -10201,6 +11655,20 @@ export namespace Prisma {
     deleteMany?: GameVersionScalarWhereInput | GameVersionScalarWhereInput[]
   }
 
+  export type ScoreUncheckedUpdateManyWithoutGameNestedInput = {
+    create?: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput> | ScoreCreateWithoutGameInput[] | ScoreUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: ScoreCreateOrConnectWithoutGameInput | ScoreCreateOrConnectWithoutGameInput[]
+    upsert?: ScoreUpsertWithWhereUniqueWithoutGameInput | ScoreUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: ScoreCreateManyGameInputEnvelope
+    set?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    disconnect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    delete?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    connect?: ScoreWhereUniqueInput | ScoreWhereUniqueInput[]
+    update?: ScoreUpdateWithWhereUniqueWithoutGameInput | ScoreUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: ScoreUpdateManyWithWhereWithoutGameInput | ScoreUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: ScoreScalarWhereInput | ScoreScalarWhereInput[]
+  }
+
   export type GameCreateNestedOneWithoutVersionsInput = {
     create?: XOR<GameCreateWithoutVersionsInput, GameUncheckedCreateWithoutVersionsInput>
     connectOrCreate?: GameCreateOrConnectWithoutVersionsInput
@@ -10213,6 +11681,20 @@ export namespace Prisma {
     upsert?: GameUpsertWithoutVersionsInput
     connect?: GameWhereUniqueInput
     update?: XOR<XOR<GameUpdateToOneWithWhereWithoutVersionsInput, GameUpdateWithoutVersionsInput>, GameUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type GameCreateNestedOneWithoutScoresInput = {
+    create?: XOR<GameCreateWithoutScoresInput, GameUncheckedCreateWithoutScoresInput>
+    connectOrCreate?: GameCreateOrConnectWithoutScoresInput
+    connect?: GameWhereUniqueInput
+  }
+
+  export type GameUpdateOneRequiredWithoutScoresNestedInput = {
+    create?: XOR<GameCreateWithoutScoresInput, GameUncheckedCreateWithoutScoresInput>
+    connectOrCreate?: GameCreateOrConnectWithoutScoresInput
+    upsert?: GameUpsertWithoutScoresInput
+    connect?: GameWhereUniqueInput
+    update?: XOR<XOR<GameUpdateToOneWithWhereWithoutScoresInput, GameUpdateWithoutScoresInput>, GameUncheckedUpdateWithoutScoresInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -10492,13 +11974,14 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionCreateNestedManyWithoutGameInput
+    scores?: ScoreCreateNestedManyWithoutGameInput
   }
 
   export type GameUncheckedCreateWithoutUserInput = {
@@ -10511,13 +11994,14 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
+    scores?: ScoreUncheckedCreateNestedManyWithoutGameInput
   }
 
   export type GameCreateOrConnectWithoutUserInput = {
@@ -10625,10 +12109,10 @@ export namespace Prisma {
     htmlCode?: StringFilter<"Game"> | string
     cssCode?: StringFilter<"Game"> | string
     jsCode?: StringFilter<"Game"> | string
+    coverImage?: StringNullableFilter<"Game"> | string | null
     isPublic?: BoolFilter<"Game"> | boolean
     publishedAt?: DateTimeNullableFilter<"Game"> | Date | string | null
     totalPlays?: IntFilter<"Game"> | number
-    highScores?: JsonNullableFilter<"Game">
     createdAt?: DateTimeFilter<"Game"> | Date | string
     updatedAt?: DateTimeFilter<"Game"> | Date | string
   }
@@ -10820,6 +12304,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ScoreCreateWithoutGameInput = {
+    id?: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type ScoreUncheckedCreateWithoutGameInput = {
+    id?: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type ScoreCreateOrConnectWithoutGameInput = {
+    where: ScoreWhereUniqueInput
+    create: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput>
+  }
+
+  export type ScoreCreateManyGameInputEnvelope = {
+    data: ScoreCreateManyGameInput | ScoreCreateManyGameInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutGamesInput = {
     update: XOR<UserUpdateWithoutGamesInput, UserUncheckedUpdateWithoutGamesInput>
     create: XOR<UserCreateWithoutGamesInput, UserUncheckedCreateWithoutGamesInput>
@@ -10885,6 +12395,34 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"GameVersion"> | Date | string
   }
 
+  export type ScoreUpsertWithWhereUniqueWithoutGameInput = {
+    where: ScoreWhereUniqueInput
+    update: XOR<ScoreUpdateWithoutGameInput, ScoreUncheckedUpdateWithoutGameInput>
+    create: XOR<ScoreCreateWithoutGameInput, ScoreUncheckedCreateWithoutGameInput>
+  }
+
+  export type ScoreUpdateWithWhereUniqueWithoutGameInput = {
+    where: ScoreWhereUniqueInput
+    data: XOR<ScoreUpdateWithoutGameInput, ScoreUncheckedUpdateWithoutGameInput>
+  }
+
+  export type ScoreUpdateManyWithWhereWithoutGameInput = {
+    where: ScoreScalarWhereInput
+    data: XOR<ScoreUpdateManyMutationInput, ScoreUncheckedUpdateManyWithoutGameInput>
+  }
+
+  export type ScoreScalarWhereInput = {
+    AND?: ScoreScalarWhereInput | ScoreScalarWhereInput[]
+    OR?: ScoreScalarWhereInput[]
+    NOT?: ScoreScalarWhereInput | ScoreScalarWhereInput[]
+    id?: StringFilter<"Score"> | string
+    gameId?: StringFilter<"Score"> | string
+    playerName?: StringFilter<"Score"> | string
+    score?: IntFilter<"Score"> | number
+    metadata?: JsonNullableFilter<"Score">
+    createdAt?: DateTimeFilter<"Score"> | Date | string
+  }
+
   export type GameCreateWithoutVersionsInput = {
     id?: string
     slug: string
@@ -10895,13 +12433,14 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGamesInput
+    scores?: ScoreCreateNestedManyWithoutGameInput
   }
 
   export type GameUncheckedCreateWithoutVersionsInput = {
@@ -10915,12 +12454,13 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    scores?: ScoreUncheckedCreateNestedManyWithoutGameInput
   }
 
   export type GameCreateOrConnectWithoutVersionsInput = {
@@ -10949,13 +12489,14 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGamesNestedInput
+    scores?: ScoreUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateWithoutVersionsInput = {
@@ -10969,12 +12510,109 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    scores?: ScoreUncheckedUpdateManyWithoutGameNestedInput
+  }
+
+  export type GameCreateWithoutScoresInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    prompt: string
+    refinedPrompt?: string | null
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    coverImage?: string | null
+    isPublic?: boolean
+    publishedAt?: Date | string | null
+    totalPlays?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutGamesInput
+    versions?: GameVersionCreateNestedManyWithoutGameInput
+  }
+
+  export type GameUncheckedCreateWithoutScoresInput = {
+    id?: string
+    userId: string
+    slug: string
+    title: string
+    description: string
+    prompt: string
+    refinedPrompt?: string | null
+    htmlCode: string
+    cssCode: string
+    jsCode: string
+    coverImage?: string | null
+    isPublic?: boolean
+    publishedAt?: Date | string | null
+    totalPlays?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: GameVersionUncheckedCreateNestedManyWithoutGameInput
+  }
+
+  export type GameCreateOrConnectWithoutScoresInput = {
+    where: GameWhereUniqueInput
+    create: XOR<GameCreateWithoutScoresInput, GameUncheckedCreateWithoutScoresInput>
+  }
+
+  export type GameUpsertWithoutScoresInput = {
+    update: XOR<GameUpdateWithoutScoresInput, GameUncheckedUpdateWithoutScoresInput>
+    create: XOR<GameCreateWithoutScoresInput, GameUncheckedCreateWithoutScoresInput>
+    where?: GameWhereInput
+  }
+
+  export type GameUpdateToOneWithWhereWithoutScoresInput = {
+    where?: GameWhereInput
+    data: XOR<GameUpdateWithoutScoresInput, GameUncheckedUpdateWithoutScoresInput>
+  }
+
+  export type GameUpdateWithoutScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    refinedPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGamesNestedInput
+    versions?: GameVersionUpdateManyWithoutGameNestedInput
+  }
+
+  export type GameUncheckedUpdateWithoutScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    refinedPrompt?: NullableStringFieldUpdateOperationsInput | string | null
+    htmlCode?: StringFieldUpdateOperationsInput | string
+    cssCode?: StringFieldUpdateOperationsInput | string
+    jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalPlays?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -11012,10 +12650,10 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    coverImage?: string | null
     isPublic?: boolean
     publishedAt?: Date | string | null
     totalPlays?: number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11105,13 +12743,14 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUpdateManyWithoutGameNestedInput
+    scores?: ScoreUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateWithoutUserInput = {
@@ -11124,13 +12763,14 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     versions?: GameVersionUncheckedUpdateManyWithoutGameNestedInput
+    scores?: ScoreUncheckedUpdateManyWithoutGameNestedInput
   }
 
   export type GameUncheckedUpdateManyWithoutUserInput = {
@@ -11143,10 +12783,10 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalPlays?: IntFieldUpdateOperationsInput | number
-    highScores?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11158,6 +12798,14 @@ export namespace Prisma {
     htmlCode: string
     cssCode: string
     jsCode: string
+    createdAt?: Date | string
+  }
+
+  export type ScoreCreateManyGameInput = {
+    id?: string
+    playerName: string
+    score: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -11188,6 +12836,30 @@ export namespace Prisma {
     htmlCode?: StringFieldUpdateOperationsInput | string
     cssCode?: StringFieldUpdateOperationsInput | string
     jsCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreUpdateWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreUncheckedUpdateWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScoreUncheckedUpdateManyWithoutGameInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playerName?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

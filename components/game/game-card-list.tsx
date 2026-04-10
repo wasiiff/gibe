@@ -9,6 +9,7 @@ type Game = {
   slug: string;
   title: string;
   description: string;
+  coverImage: string | null;
   isPublic: boolean;
   updatedAt: Date | string;
 };
@@ -31,11 +32,7 @@ export function GameCardList({ games }: GameCardListProps) {
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {games.map((game) => (
-        <GameCard
-          key={game.id}
-          game={game}
-          onDelete={handleDelete}
-        />
+        <GameCard key={game.id} game={game} onDelete={handleDelete} />
       ))}
     </div>
   );

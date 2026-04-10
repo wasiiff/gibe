@@ -2,7 +2,7 @@
 
 import { Download, GitFork, Loader2, Trophy } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,10 @@ import { Panel } from "@/components/ui/panel";
 import { formatRelativeDate, truncate } from "@/lib/utils";
 
 type HighScore = {
+  id: string;
   playerName: string;
   score: number;
-  date: string;
+  createdAt: string;
 };
 
 type GameCardPublicProps = {
@@ -21,10 +22,10 @@ type GameCardPublicProps = {
     slug: string;
     title: string;
     description: string;
+    coverImage: string | null;
     isPublic: boolean;
     publishedAt: Date | string | null;
     totalPlays: number;
-    highScores: HighScore[] | null;
     user: {
       id: string;
       name: string;
@@ -37,10 +38,23 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
   const [isRemixing, startRemixTransition] = useTransition();
   const [remixError, setRemixError] = useState<string | null>(null);
   const [showScores, setShowScores] = useState(false);
+  const [topScores, setTopScores] = useState<HighScore[]>([]);
+  const [loadingScores, setLoadingScores] = useState(false);
 
-  const topScores = game.highScores
-    ? [...game.highScores].sort((a, b) => b.score - a.score).slice(0, 3)
-    : [];
+  useEffect(() => {
+    if (showScores && topScores.length === 0) {
+      setLoadingScores(true);
+      fetch(`/api/games/${game.id}/scores?limit=3`)
+        .then((res) => res.json())
+        .then((data) => {
+          setTopScores(data.scores ?? []);
+          setLoadingScores(false);
+        })
+        .catch(() => {
+          setLoadingScores(false);
+        });
+    }
+  }, [showScores, game.id, topScores.length]);
 
   async function handleRemix() {
     setRemixError(null);
@@ -62,7 +76,9 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
         };
         window.location.href = `/studio/${payload.game.id}`;
       } catch (err) {
-        setRemixError(err instanceof Error ? err.message : "Failed to remix game");
+        setRemixError(
+          err instanceof Error ? err.message : "Failed to remix game",
+        );
       }
     });
   }
@@ -73,6 +89,25 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
 
   return (
     <Panel className="group flex h-full flex-col gap-5 overflow-hidden p-5 transition hover:border-gray-300">
+      {/* Cover Image */}
+      {game.coverImage ? (
+        <div className="-mx-5 -mt-5 mb-2 overflow-hidden rounded-t-2xl">
+          <img
+            src={game.coverImage}
+            alt={game.title}
+            className="h-40 w-full object-cover transition group-hover:scale-105"
+          />
+        </div>
+      ) : (
+        <div className="-mx-5 -mt-5 mb-2 h-40 rounded-t-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
+          <div className="flex h-full items-center justify-center">
+            <span className="font-display text-2xl font-bold uppercase tracking-[0.1em] text-white/80">
+              {game.title.charAt(0)}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header with publisher info */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
@@ -102,7 +137,9 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
-          <span>{game.publishedAt ? formatRelativeDate(game.publishedAt) : "N/A"}</span>
+          <span>
+            {game.publishedAt ? formatRelativeDate(game.publishedAt) : "N/A"}
+          </span>
         </div>
       </div>
 
@@ -126,45 +163,55 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
       </div>
 
       {/* Scoreboard (expandable) */}
-      {showScores && topScores.length > 0 && (
+      {showScores && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
           <div className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.1em] text-amber-700">
             <Trophy className="size-3.5" />
             Top Players
           </div>
-          <div className="space-y-1.5">
-            {topScores.map((score, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
-                      index === 0
-                        ? "bg-amber-400 text-white"
-                        : index === 1
-                          ? "bg-gray-400 text-white"
-                          : "bg-orange-400 text-white"
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
-                  <span className="font-medium text-gray-700">
-                    {score.playerName}
-                  </span>
+          {loadingScores ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="size-4 animate-spin text-amber-600" />
+            </div>
+          ) : topScores.length > 0 ? (
+            <div className="space-y-1.5">
+              {topScores.map((score, index) => (
+                <div
+                  key={score.id}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
+                        index === 0
+                          ? "bg-amber-400 text-white"
+                          : index === 1
+                            ? "bg-gray-400 text-white"
+                            : "bg-orange-400 text-white"
+                      }`}
+                    >
+                      {index + 1}
+                    </span>
+                    <span className="font-medium text-gray-700">
+                      {score.playerName}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-display text-sm font-bold text-gray-900">
+                      {score.score.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {formatRelativeDate(score.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-display text-sm font-bold text-gray-900">
-                    {score.score.toLocaleString()}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {formatRelativeDate(score.date)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="py-2 text-center text-xs text-gray-500">
+              No scores yet for this game.
+            </p>
+          )}
         </div>
       )}
 
@@ -172,9 +219,7 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
       <div className="mt-auto space-y-2">
         <div className="flex gap-2">
           <Button asChild variant="primary" className="flex-1">
-            <Link href={`/play/${game.slug}`}>
-              Play Game
-            </Link>
+            <Link href={`/play/${game.slug}`}>Play Game</Link>
           </Button>
           <Button
             variant="secondary"
@@ -202,9 +247,7 @@ export function GameCardPublic({ game }: GameCardPublicProps) {
           {isRemixing ? "Remixing..." : "Remix & Improve"}
         </Button>
 
-        {remixError && (
-          <p className="text-xs text-red-600">{remixError}</p>
-        )}
+        {remixError && <p className="text-xs text-red-600">{remixError}</p>}
       </div>
     </Panel>
   );

@@ -31,13 +31,18 @@ export default async function GamesPage() {
               Published Games
             </h1>
             <p className="max-w-2xl text-base leading-7 text-gray-500">
-              Explore games created by the community. Play them, check the leaderboards,
-              download assets, or remix them to add your own improvements.
+              Explore games created by the community. Play them, check the
+              leaderboards, download assets, or remix them to add your own
+              improvements.
             </p>
           </div>
           <div className="flex gap-3">
             {session ? (
-              <Button asChild variant="primary" leading={<Sparkles className="size-4" />}>
+              <Button
+                asChild
+                variant="primary"
+                leading={<Sparkles className="size-4" />}
+              >
                 <Link href="/studio/new">Create Your Game</Link>
               </Button>
             ) : (
@@ -64,7 +69,7 @@ export default async function GamesPage() {
           </div>
           <div>
             <p className="font-display text-2xl font-bold text-gray-900">
-              {new Set(games.map(g => g.user.id)).size}
+              {new Set(games.map((g) => g.user.id)).size}
             </p>
             <p className="text-gray-500">Creators</p>
           </div>
@@ -82,10 +87,10 @@ export default async function GamesPage() {
                 slug: game.slug,
                 title: game.title,
                 description: game.description,
+                coverImage: game.coverImage,
                 isPublic: game.isPublic,
                 publishedAt: game.publishedAt,
                 totalPlays: game.totalPlays,
-                highScores: game.highScores as Array<{ playerName: string; score: number; date: string }> | null,
                 user: game.user,
               }}
             />

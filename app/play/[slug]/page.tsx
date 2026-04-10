@@ -1,17 +1,29 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { ArrowLeft, ArrowUpRight, Gamepad2, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Gamepad2,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 
 import { GamePreview } from "@/components/game-studio/game-preview";
 import { RemixButton } from "@/components/game/remix-button";
 import { ShareLinkButton } from "@/components/game/share-link-button";
+import { ScoreSubmitButton } from "@/components/game/score-submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
 import { buildPreviewDocument } from "@/lib/preview-document";
-import { getPublicGameBySlug } from "@/lib/games";
+import {
+  getPublicGameBySlug,
+  getTopScores,
+  incrementGamePlays,
+} from "@/lib/games";
 import { formatRelativeDate } from "@/lib/utils";
+import { Scoreboard } from "@/components/game/scoreboard";
 
 export default async function PlayGamePage({
   params,
@@ -26,6 +38,12 @@ export default async function PlayGamePage({
   if (!game) {
     notFound();
   }
+
+  // Increment play count
+  await incrementGamePlays(game.id);
+
+  // Fetch top scores
+  const scores = await getTopScores(game.id, 10);
 
   const previewDocument = buildPreviewDocument({
     html: game.htmlCode,
@@ -88,6 +106,20 @@ export default async function PlayGamePage({
             <p className="mt-2 text-sm text-gray-500">
               Updated {formatRelativeDate(game.updatedAt)}.
             </p>
+            <p className="mt-1 text-sm text-gray-500">
+              {game.totalPlays} {game.totalPlays === 1 ? "play" : "plays"}
+            </p>
+          </Panel>
+
+          {/* Scoreboard */}
+          <Panel className="p-5">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.18em] text-gray-400">
+                Leaderboard
+              </p>
+              <Trophy className="size-4 text-amber-600" />
+            </div>
+            <Scoreboard scores={scores} className="mt-3" />
           </Panel>
 
           <Panel className="p-5">
@@ -102,6 +134,7 @@ export default async function PlayGamePage({
           </Panel>
 
           <div className="space-y-3">
+            <ScoreSubmitButton gameId={game.id} />
             <Button
               asChild
               variant="primary"

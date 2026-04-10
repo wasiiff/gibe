@@ -282,3 +282,58 @@ export async function remixGame(input: RemixGameInput) {
     },
   });
 }
+
+type SubmitScoreInput = {
+  gameId: string;
+  playerName: string;
+  score: number;
+  metadata?: Record<string, unknown>;
+};
+
+export async function submitScore(input: SubmitScoreInput) {
+  if (!hasDatabaseConfig()) {
+    return null;
+  }
+
+  const game = await db.game.findUnique({
+    where: { id: input.gameId },
+  });
+
+  if (!game) {
+    return null;
+  }
+
+  return db.score.create({
+    data: {
+      gameId: input.gameId,
+      playerName: input.playerName,
+      score: input.score,
+      metadata: (input.metadata ?? {}) as any,
+    },
+  });
+}
+
+export async function getTopScores(gameId: string, limit = 10) {
+  if (!hasDatabaseConfig()) {
+    return [];
+  }
+
+  return db.score.findMany({
+    where: { gameId },
+    orderBy: { score: "desc" },
+    take: limit,
+  });
+}
+
+export async function incrementGamePlays(gameId: string) {
+  if (!hasDatabaseConfig()) {
+    return null;
+  }
+
+  return db.game.update({
+    where: { id: gameId },
+    data: {
+      totalPlays: { increment: 1 },
+    },
+  });
+}
